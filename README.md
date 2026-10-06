@@ -94,11 +94,39 @@ report = run_benchmark(res)                             # splits + audits
 | user-holdout | logistic regression | 0.88 | **0.40** | 0.63 | 0 | 0.10 |
 | scenario-holdout (hold out `ip_theft`) | logistic regression | 0.74 | **0.35** | 0.35 | +8 | 0.00 |
 
+A **sequence baseline** (`sequence_logreg`) that augments each user-day with
+per-user rolling/escalation context lifts temporal-split PR-AUC to **0.48** (ROC
+0.93) — modelling the *trajectory*, not just the day, is where the signal is, which
+is the whole point of growing intent along the Critical Pathway.
+
 **Shortcut audit:** the single "after-hours + removable + upload" rule that scores
 near-perfect on CERT collapses to **PR-AUC 0.009** here, while a full model reaches
 0.39 (signal-depth gap **+0.38**). The shortcut's false positives are 84–100 % the
 *engineered hard negatives* — they trap the naive rule, by design. Detection requires
 genuine behavioural modelling and is far from solved at realistic prevalence.
+
+### Scaled reference dataset
+
+`configs/finance_r62_sparse.yaml` defines the canonical scaled instance — **1,000
+employees · 120 days · finance** — with **9.13 M events**, 6 of 8 insiders activating,
+80 benign-anomaly hard negatives, and a **0.02 % malicious user-day prevalence**
+(sparser than CERT r6.2). The full event stream is multi-GB and regenerated
+deterministically (`scripts/make_reference.sh`); compact reports are committed under
+[`reference/`](reference/) (`summary.json`, `benchmark.json`, `episodes.json`).
+
+At this extreme sparsity the static detectors nearly collapse (`logreg` PR-AUC ≈ 0.09)
+and the CERT shortcut is worthless (PR-AUC 0.0004) — but the **sequence baseline
+recovers strongly** and generalises:
+
+| split | `logreg` PR-AUC | **`sequence_logreg` PR-AUC** | `sequence_logreg` ROC | recall@1% | median lead |
+|---|---|---|---|---|---|
+| temporal | 0.09 | **0.48** | 0.99 | 0.83 | 0 d |
+| user-holdout | 0.10 | **0.61** | 1.00 | 1.00 | +16 d |
+| scenario-holdout (`data_leak` held out) | 0.10 | **0.44** | 0.996 | 0.88 | +14 d |
+
+The lesson the dataset is built to teach: at realistic prevalence, detection lives in
+the **behavioural trajectory** (escalation along the Critical Pathway), not in any
+single day or signature — and modelling it buys ~2 weeks of early warning.
 
 ## Use the Claude renderer (optional)
 
@@ -139,7 +167,7 @@ synthitd/
   render/          label-blind renderer (template + Anthropic) + leakage linter
   writers.py       JSONL / CSV / ground-truth writers
   export_cert.py   CERT r6.2-compatible exporter
-  benchmark/       features, splits, baselines, metrics, audits, runner
+  benchmark/       features, splits, baselines, sequence baselines, metrics, audits, runner
   cli.py           generate / benchmark / export-cert / info
 tests/             pytest suite (determinism, label-blindness, anti-shortcut, ...)
 configs/           example dataset specifications

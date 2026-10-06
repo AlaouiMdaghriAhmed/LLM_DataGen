@@ -66,9 +66,12 @@ class Label(str, enum.Enum):
         return self is Label.MALICIOUS
 
 
-@dataclass
+@dataclass(slots=True)
 class Event:
     """A single observable on one channel at one instant.
+
+    Uses ``slots=True`` so that multi-million-event datasets stay within memory at
+    scale (roughly a 40-50% per-object saving over a plain dataclass).
 
     Attributes
     ----------

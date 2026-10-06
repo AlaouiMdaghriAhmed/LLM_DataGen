@@ -88,6 +88,14 @@ if _HAVE_SK:
     BASELINES["logreg"] = logreg
     BASELINES["isolation_forest"] = isolation_forest
 
+# temporal / sequence baselines (registered here to keep a single registry; the
+# sequence module imports only from .features, so there is no import cycle).
+from .sequence import ewma_selfbaseline, sequence_logreg  # noqa: E402
+
+BASELINES["ewma_selfbaseline"] = ewma_selfbaseline
+if _HAVE_SK:
+    BASELINES["sequence_logreg"] = sequence_logreg
+
 
 def run_baselines(fm: FeatureMatrix, tr: np.ndarray, te: np.ndarray) -> dict[str, np.ndarray]:
     return {name: fn(fm, tr, te) for name, fn in BASELINES.items()}

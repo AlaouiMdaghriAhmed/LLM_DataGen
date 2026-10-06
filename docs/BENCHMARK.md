@@ -56,8 +56,21 @@ explained anomalies.
 
 ## Reference baselines
 
-`volume_rule` (the CERT shortcut, a floor), `user_zscore` (per-user self-baseline),
-`logreg` (supervised, class-balanced), `isolation_forest` (unsupervised). They are
+| baseline | family | notes |
+|---|---|---|
+| `volume_rule` | rule | the CERT shortcut ("after-hours + removable + upload"); a floor |
+| `user_zscore` | unsupervised | per-user self-baseline vs that user's global stats |
+| `logreg` | supervised | class-balanced logistic regression on the static features |
+| `isolation_forest` | unsupervised | anomaly score on the static features |
+| `ewma_selfbaseline` | **sequence, unsupervised** | causal per-user EWMA of risk features; score = today's positive deviation |
+| `sequence_logreg` | **sequence, supervised** | logreg on features augmented with per-user rolling deviations and escalation (lagged context) |
+
+The two sequence baselines (in `benchmark/sequence.py`) exploit the temporal
+*escalation* of the Critical-Pathway risk — each row sees only that user's own past,
+so there is no leakage. They are the natural detectors for the earliness metric, and
+`sequence_logreg` is typically the strongest baseline (on the shipped sample it lifts
+PR-AUC from ~0.38 to ~0.48 over the static `logreg`), showing that modelling the
+*trajectory*, not just the day, is where the signal is. The baselines are
 deliberately simple — the deliverable is the *benchmark*, not a new SOTA detector.
 
 ## Reading the sample results

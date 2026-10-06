@@ -1,15 +1,19 @@
-# Finance org at CERT r6.2-like sparse prevalence (~0.1% insiders) and larger scale.
-# Heavier compute; use the Batch API renderer or template for cost control.
-name: finance_r62_sparse
+# Reference dataset: a large finance org at CERT r6.2-like sparse prevalence.
+# 1000 employees x 120 days, ~0.8% insider population (a handful activate),
+# imperfect sensors. This is the canonical "scaled" benchmark instance; the full
+# event stream is multi-GB and regenerated deterministically from this config
+# (scripts/make_reference.sh), while sample reports live under reference/.
+name: finance_reference
 domain: finance
 n_employees: 1000
-horizon_days: 180
-insider_prevalence: 0.005
+horizon_days: 120
+insider_prevalence: 0.008
 anomalous_benign_rate: 0.08
 start_date: "2024-01-01"
 seed: 20
+activity_scale: 0.8          # trims per-user volume so the full stream stays tractable
 renderer: template
-render_fraction: 0.15        # render only a sample of free-text to bound cost
+render_fraction: 0.1         # render only a sample of free text to bound cost
 channel_coverage:
   endpoint: 0.6
   http: 0.85

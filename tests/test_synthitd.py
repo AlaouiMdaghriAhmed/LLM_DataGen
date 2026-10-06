@@ -220,6 +220,42 @@ def test_benchmark_runs(result):
     assert rep["n_malicious_userdays"] >= 1
 
 
+# --- sequence / temporal baselines -----------------------------------------
+def test_sequence_baselines_registered():
+    from synthitd.benchmark.baselines import BASELINES
+    assert "sequence_logreg" in BASELINES
+    assert "ewma_selfbaseline" in BASELINES
+
+
+def test_sequence_augmentation_causal_and_finite(result):
+    from synthitd.benchmark.sequence import augment_sequence, _user_order
+    fm = build_userday_features(result)
+    Xa = augment_sequence(fm)
+    assert Xa.shape[0] == len(fm)
+    assert Xa.shape[1] > fm.X.shape[1]          # temporal columns appended
+    assert np.isfinite(Xa).all()
+    # the earliest day of each user must have zero temporal deviation (no past)
+    k = len([n for n in ["file_size_total_kb", "n_file_removable", "n_email_external",
+                         "n_http_upload", "http_bytes_total", "after_hours_ratio",
+                         "n_file_copy", "n_idp_admin_app"] if n in fm.feature_names])
+    base_w = fm.X.shape[1]
+    for u, idxs in _user_order(fm).items():
+        first = idxs[0]
+        assert np.allclose(Xa[first, base_w:base_w + k], 0.0)
+        assert Xa[first, -1] == 0.0              # history length 0 on day one
+
+
+def test_sequence_baselines_score(result):
+    from synthitd.benchmark.sequence import sequence_logreg, ewma_selfbaseline
+    from synthitd.benchmark.splits import temporal_split
+    fm = build_userday_features(result)
+    tr, te = temporal_split(fm, 0.7)
+    for fn in (sequence_logreg, ewma_selfbaseline):
+        s = fn(fm, tr, te)
+        assert s.shape[0] == len(te)
+        assert np.isfinite(s).all()
+
+
 # --- config -----------------------------------------------------------------
 def test_config_roundtrip():
     cfg = SimConfig(name="x", lunch_hours=(12.0, 13.5))

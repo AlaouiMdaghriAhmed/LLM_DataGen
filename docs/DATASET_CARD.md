@@ -77,6 +77,18 @@ Binary ITD collapses to `malicious` vs rest; graded tasks use `max_label_rank` i
 Scale freely via `SimConfig` (`n_employees`, `horizon_days`, `insider_prevalence`,
 `anomalous_benign_rate`, `channel_coverage`, `seed`).
 
+### Scaled reference instance (`configs/finance_r62_sparse.yaml`)
+
+1,000 employees · 120 days · finance · seed 20 · `activity_scale` 0.8. **9,132,134
+full events** (7,827,513 observed); 8 insiders, 6 activate; 80 anomalous-benign
+employees; 24,103 anomalous-benign / 199 precursor / **61 malicious** events;
+**0.02 % malicious user-day prevalence** (sparser than CERT r6.2). Compact reports in
+[`../reference/`](../reference/); regenerate the full stream with
+`scripts/make_reference.sh` (multi-GB, gitignored). At this prevalence a supervised
+sequence model (`sequence_logreg`) reaches PR-AUC 0.44–0.61 and ~2 weeks of detection
+lead across splits, while static baselines sit near PR-AUC 0.1 — see
+[`BENCHMARK.md`](BENCHMARK.md).
+
 ## Known limitations
 
 - **Behaviour is model-based, not learned from real logs.** Baseline rates and role

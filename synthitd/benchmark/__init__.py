@@ -11,6 +11,7 @@ from __future__ import annotations
 from .features import build_userday_features, FeatureMatrix, FEATURE_NAMES  # noqa: F401
 from .splits import temporal_split, user_holdout_split, scenario_holdout_split  # noqa: F401
 from .baselines import run_baselines, BASELINES  # noqa: F401
+from .sequence import sequence_logreg, ewma_selfbaseline, augment_sequence  # noqa: F401
 from .metrics import evaluate, Metrics  # noqa: F401
 from .audits import shortcut_audit, stylized_facts  # noqa: F401
 
