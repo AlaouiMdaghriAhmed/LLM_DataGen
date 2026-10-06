@@ -1,2 +1,2 @@
 # LLM_DataGen
-Generating Synthetic Insider Personas For Behaviour Based Models 
+Generating Synthetic Insider Data For Behaviour Based Models 
