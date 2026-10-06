@@ -1,0 +1,17 @@
+# Small, fast tech-company dataset — good for smoke tests and demos.
+name: tech_small
+domain: tech
+n_employees: 120
+horizon_days: 70
+insider_prevalence: 0.06
+anomalous_benign_rate: 0.10
+start_date: "2024-01-01"
+seed: 11
+renderer: template          # "template" (free) or "anthropic"
+render_fraction: 1.0
+# observability: a realistically imperfect sensor
+channel_coverage:
+  endpoint: 0.7
+  http: 0.9
+  chat: 0.8
+sensor_dropout: 0.02

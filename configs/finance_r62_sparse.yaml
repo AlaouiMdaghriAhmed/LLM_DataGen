@@ -1,0 +1,18 @@
+# Finance org at CERT r6.2-like sparse prevalence (~0.1% insiders) and larger scale.
+# Heavier compute; use the Batch API renderer or template for cost control.
+name: finance_r62_sparse
+domain: finance
+n_employees: 1000
+horizon_days: 180
+insider_prevalence: 0.005
+anomalous_benign_rate: 0.08
+start_date: "2024-01-01"
+seed: 20
+renderer: template
+render_fraction: 0.15        # render only a sample of free-text to bound cost
+channel_coverage:
+  endpoint: 0.6
+  http: 0.85
+  idp: 0.95
+  chat: 0.75
+sensor_dropout: 0.03
