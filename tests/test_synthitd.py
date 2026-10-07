@@ -291,6 +291,30 @@ def test_legacy_cert_mode_removes_benign_shortcut_sources():
     assert c_up == 0 and c_rem == 0
 
 
+# --- UBS-Transformer reimplementation (torch optional) ---------------------
+def test_ubs_transformer_runs_if_torch_available():
+    try:
+        import torch  # noqa: F401
+    except Exception:
+        import pytest as _pytest
+        _pytest.skip("PyTorch not installed")
+    from synthitd.benchmark.ubs_transformer import (
+        run_ubs_transformer, UBSConfig, build_user_sequences)
+    res = simulate(SimConfig(domain="tech", n_employees=60, horizon_days=40,
+                             insider_prevalence=0.15, seed=3))
+    X, users, is_insider = build_user_sequences(res)
+    assert X.shape[0] == len(users) == 60
+    assert X.shape[1] == 40  # one step per horizon day
+    # tiny architecture / few epochs just to exercise the pipeline
+    out = run_ubs_transformer(res, UBSConfig(d_model=32, n_layers=1, n_heads=2,
+                                             ffn=64, epochs=2, seed=0))
+    assert "iforest" in out["detectors"]
+    for det, m in out["detectors"].items():
+        if "auroc" in m and m["auroc"] == m["auroc"]:  # not NaN
+            assert 0.0 <= m["auroc"] <= 1.0
+            assert 0.0 <= m["f1"] <= 1.0
+
+
 # --- config -----------------------------------------------------------------
 def test_config_roundtrip():
     cfg = SimConfig(name="x", lunch_hours=(12.0, 13.5))
