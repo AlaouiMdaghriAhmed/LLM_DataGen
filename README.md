@@ -128,6 +128,20 @@ The lesson the dataset is built to teach: at realistic prevalence, detection liv
 the **behavioural trajectory** (escalation along the Critical Pathway), not in any
 single day or signature — and modelling it buys ~2 weeks of early warning.
 
+### Running a SOTA CERT detector on it
+
+`docs/SOTA_COMPARISON.md` reports a controlled 5-seed ablation: reference
+reimplementations of the dominant CERT SOTA recipes (random forest / gradient
+boosting / MLP on user-day features, a reconstruction autoencoder, and a temporal
+GBDT) run on a CERT-regime version of the data vs the realistic version. **Every
+classical detector loses 43–92 % of its PR-AUC and ~0.1 ROC** when the anti-shortcut
+mechanisms are enabled; on realistic data all detectors are weak in PR-AUC (near the
+~0.0017 no-skill floor), and only the temporal model stays regime-robust on ranking
+and catches ~2.5× more insiders than the static models under a fixed review budget on
+**unseen users**. Reproduce: `PYTHONPATH=. python scripts/sota_experiment.py 300 120 5`
+(writes `reference/sota_comparison.json`). The write-up states its own threats to
+validity (under-power, the 4-axis joint ablation, PCA-AE as a stand-in).
+
 ## Use the Claude renderer (optional)
 
 ```bash

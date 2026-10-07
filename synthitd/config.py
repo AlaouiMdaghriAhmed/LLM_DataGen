@@ -57,6 +57,19 @@ class SimConfig:
     max_active_episodes: int | None = None
     # allowed pathway families (subset of threats.PLAYBOOKS keys); empty = all
     enabled_playbooks: list[str] = field(default_factory=list)
+    # CERT-regime ablation. When True, the generator reproduces the signature
+    # separability of the legacy CERT dataset by degenerately disabling the whole
+    # anti-shortcut regime at once. It changes FOUR coupled behavioural axes (not a
+    # single "shortcut"), so results from this flag reflect the combined regime, not
+    # an isolated cause:
+    #   1. benign power-user cloud uploads / removable-media copies -> 0
+    #   2. benign after-hours baseline -> suppressed
+    #   3. benign-anomaly exfil-looking bursts (hard negatives) -> removed
+    #   4. insider stealth -> 0 (obvious routing + after-hours timing + larger volume)
+    # Used to show a SOTA CERT detector scores near-perfectly on CERT-like data and
+    # collapses on the realistic dataset. For the *isolated* signature-shortcut effect
+    # use the shortcut_audit instead. Not for normal data generation.
+    legacy_cert_mode: bool = False
 
     # --- observability (requirement R8) ---
     # per-channel coverage probability (1.0 = perfect sensor). Missing keys = 1.0

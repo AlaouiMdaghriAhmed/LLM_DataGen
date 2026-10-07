@@ -256,6 +256,41 @@ def test_sequence_baselines_score(result):
         assert np.isfinite(s).all()
 
 
+# --- SOTA detectors & CERT-regime ablation ---------------------------------
+def test_sota_models_score(result):
+    from synthitd.benchmark.sota import SOTA_MODELS
+    from synthitd.benchmark.splits import temporal_split
+    assert SOTA_MODELS, "expected sklearn-backed SOTA models to be registered"
+    fm = build_userday_features(result)
+    tr, te = temporal_split(fm, 0.7)
+    for name, fn in SOTA_MODELS.items():
+        s = fn(fm, tr, te)
+        assert s.shape[0] == len(te), name
+        assert np.isfinite(s).all(), name
+
+
+def test_legacy_cert_mode_removes_benign_shortcut_sources():
+    """The ablation must make upload/removable malicious-only, reproducing CERT's
+    signature separability; realistic mode must spread them across benign users."""
+    from synthitd.events import Channel, Label
+    base = dict(domain="tech", n_employees=40, horizon_days=40,
+                insider_prevalence=0.12, seed=3)
+    real = simulate(SimConfig(name="real", legacy_cert_mode=False, **base))
+    cert = simulate(SimConfig(name="cert", legacy_cert_mode=True, **base))
+
+    def benign_upload_removable(res):
+        up = sum(1 for e in res.events if e.action == "http.upload" and e.label is Label.BENIGN)
+        rem = sum(1 for e in res.events if e.channel is Channel.FILE
+                  and e.attrs.get("removable") and e.label is Label.BENIGN)
+        return up, rem
+
+    r_up, r_rem = benign_upload_removable(real)
+    c_up, c_rem = benign_upload_removable(cert)
+    # realistic has benign power-user uploads/removable; CERT-regime has ~none
+    assert r_up > 0 and r_rem > 0
+    assert c_up == 0 and c_rem == 0
+
+
 # --- config -----------------------------------------------------------------
 def test_config_roundtrip():
     cfg = SimConfig(name="x", lunch_hours=(12.0, 13.5))

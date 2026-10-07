@@ -84,6 +84,14 @@ class BehaviorModel:
     def _profile(self, emp: Employee) -> dict[str, float]:
         p = self._profiles.get(emp.emp_id)
         if p is None:
+            if self.cfg.legacy_cert_mode:
+                # CERT regime: no legitimate upload/removable power users, so those
+                # features become near-perfect markers of malice (the shortcut).
+                g = self.rng.stream("profile", emp.emp_id)
+                p = {"upload": 0.0, "removable": 0.0,
+                     "after_hours": float(0.05 + 0.1 * (1 - emp.ocean["conscientiousness"]))}
+                self._profiles[emp.emp_id] = p
+                return p
             g = self.rng.stream("profile", emp.emp_id)
             # anomalous-benign employees are *heavier* legitimate power users — the
             # engineered hard negatives whose normal behaviour mimics exfiltration.
@@ -282,6 +290,10 @@ class BehaviorModel:
                      attrs={"kind": trig.kind, "approved": True,
                             "window_days": trig.end_day - trig.start_day},
                      label=Label.BENIGN)
+        if self.cfg.legacy_cert_mode:
+            # CERT regime: no exfil-looking benign bursts (weak hard negatives), so
+            # the positive class is cleanly separable.
+            return
         jewel = _pick(g, emp.sensitive_access or ["shared_docs"])
         if trig.kind == "approved_bulk_export":
             # a large export — sometimes to removable, sometimes to cloud; approved.
