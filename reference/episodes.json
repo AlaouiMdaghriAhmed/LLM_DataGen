@@ -1,0 +1,124 @@
+[
+  {
+    "episode_id": "ep-quant-026-60",
+    "emp_id": "quant-026",
+    "role": "Quant Researcher",
+    "pathway": "ip_theft",
+    "onset_day": 60,
+    "precursor_start": 39,
+    "episode_end": 64,
+    "n_precursor_events": 41,
+    "n_malicious_events": 12,
+    "technique_ids": [
+      "T1005",
+      "T1052",
+      "T1074",
+      "T1083",
+      "T1087",
+      "T1567"
+    ],
+    "predisposition": 0.51,
+    "risk_at_onset": 0.817
+  },
+  {
+    "episode_id": "ep-ops-017-116",
+    "emp_id": "ops-017",
+    "role": "Operations Analyst",
+    "pathway": "data_leak",
+    "onset_day": 116,
+    "precursor_start": 95,
+    "episode_end": 118,
+    "n_precursor_events": 48,
+    "n_malicious_events": 7,
+    "technique_ids": [
+      "T1005",
+      "T1048",
+      "T1087",
+      "T1114",
+      "T1567.002"
+    ],
+    "predisposition": 0.531,
+    "risk_at_onset": 0.685
+  },
+  {
+    "episode_id": "ep-comp-069-78",
+    "emp_id": "comp-069",
+    "role": "Compliance Officer",
+    "pathway": "privilege_misuse",
+    "onset_day": 78,
+    "precursor_start": 60,
+    "episode_end": 84,
+    "n_precursor_events": 26,
+    "n_malicious_events": 23,
+    "technique_ids": [
+      "T1005",
+      "T1078",
+      "T1530",
+      "T1548",
+      "T1567"
+    ],
+    "predisposition": 0.441,
+    "risk_at_onset": 0.735
+  },
+  {
+    "episode_id": "ep-risk-014-103",
+    "emp_id": "risk-014",
+    "role": "Risk Analyst",
+    "pathway": "ip_theft",
+    "onset_day": 103,
+    "precursor_start": 87,
+    "episode_end": 107,
+    "n_precursor_events": 31,
+    "n_malicious_events": 8,
+    "technique_ids": [
+      "T1005",
+      "T1052",
+      "T1074",
+      "T1083",
+      "T1087",
+      "T1567"
+    ],
+    "predisposition": 0.229,
+    "risk_at_onset": 0.598
+  },
+  {
+    "episode_id": "ep-rm-029-85",
+    "emp_id": "rm-029",
+    "role": "Relationship Manager",
+    "pathway": "data_leak",
+    "onset_day": 85,
+    "precursor_start": 76,
+    "episode_end": 86,
+    "n_precursor_events": 21,
+    "n_malicious_events": 4,
+    "technique_ids": [
+      "T1005",
+      "T1048",
+      "T1087",
+      "T1114",
+      "T1567.002"
+    ],
+    "predisposition": 0.31,
+    "risk_at_onset": 0.573
+  },
+  {
+    "episode_id": "ep-rm-080-82",
+    "emp_id": "rm-080",
+    "role": "Relationship Manager",
+    "pathway": "data_leak",
+    "onset_day": 82,
+    "precursor_start": 63,
+    "episode_end": 84,
+    "n_precursor_events": 32,
+    "n_malicious_events": 7,
+    "technique_ids": [
+      "T1005",
+      "T1048",
+      "T1087",
+      "T1114",
+      "T1567.002"
+    ],
+    "predisposition": 0.477,
+    "risk_at_onset": 0.771
+  }
+]

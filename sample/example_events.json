@@ -1,0 +1,262 @@
+{
+  "benign": [
+    {
+      "event_id": "e000010045",
+      "ts": 1704096045.9391372,
+      "channel": "chat",
+      "actor": "ds-007",
+      "action": "chat.message",
+      "attrs": {
+        "channel": "#tech-ds",
+        "dm": false,
+        "wants_render": true
+      },
+      "label": "benign",
+      "episode_id": "",
+      "technique_ids": [],
+      "risk_state": 0.0,
+      "render": {
+        "message": "heads up \u2014 general is updated on the share"
+      },
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000004899",
+      "ts": 1704096059.4499688,
+      "channel": "email",
+      "actor": "eng-041",
+      "action": "email.send",
+      "attrs": {
+        "to_internal": true,
+        "n_recipients": 4,
+        "n_attachments": 0,
+        "size_kb": 12,
+        "wants_render": true
+      },
+      "label": "benign",
+      "episode_id": "",
+      "technique_ids": [],
+      "risk_state": 0.0,
+      "render": {
+        "subject": "re: general",
+        "body": "Hi team,\n\nHere is the general update you asked for. Happy to walk through it.\n\nBest,"
+      },
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000008284",
+      "ts": 1704096082.2900052,
+      "channel": "chat",
+      "actor": "pm-005",
+      "action": "chat.message",
+      "attrs": {
+        "channel": "#tech-pm",
+        "dm": true,
+        "wants_render": true
+      },
+      "label": "benign",
+      "episode_id": "",
+      "technique_ids": [],
+      "risk_state": 0.0,
+      "render": {
+        "message": "quick q on general, got a sec?"
+      },
+      "causal_parent": ""
+    }
+  ],
+  "anomalous_benign": [
+    {
+      "event_id": "e000010161",
+      "ts": 1704092811.7690744,
+      "channel": "logon",
+      "actor": "ds-008",
+      "action": "logon.start",
+      "attrs": {
+        "host": "HOST-DS-008",
+        "ip": "203.0.43.208",
+        "geo": "remote",
+        "vpn": true
+      },
+      "label": "anomalous_benign",
+      "episode_id": "",
+      "technique_ids": [],
+      "risk_state": 0.0,
+      "render": null,
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000009412",
+      "ts": 1704097438.6223679,
+      "channel": "device",
+      "actor": "ds-002",
+      "action": "device.connect",
+      "attrs": {
+        "kind": "usb_storage",
+        "host": "HOST-DS-002",
+        "approved": true
+      },
+      "label": "anomalous_benign",
+      "episode_id": "",
+      "technique_ids": [],
+      "risk_state": 0.0,
+      "render": null,
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000009710",
+      "ts": 1704101500.2021196,
+      "channel": "logon",
+      "actor": "ds-005",
+      "action": "logon.start",
+      "attrs": {
+        "host": "HOST-DS-005",
+        "ip": "203.0.203.111",
+        "geo": "remote",
+        "vpn": true
+      },
+      "label": "anomalous_benign",
+      "episode_id": "",
+      "technique_ids": [],
+      "risk_state": 0.0,
+      "render": null,
+      "causal_parent": ""
+    }
+  ],
+  "precursor": [
+    {
+      "event_id": "e000236005",
+      "ts": 1705707643.9085026,
+      "channel": "file",
+      "actor": "hr-004",
+      "action": "file.open",
+      "attrs": {
+        "asset": "mna",
+        "path": "/share/mna/index",
+        "breadth": 21,
+        "out_of_pattern": true
+      },
+      "label": "precursor",
+      "episode_id": "ep-hr-004-39",
+      "technique_ids": [
+        "T1087"
+      ],
+      "risk_state": 0.47842258358763406,
+      "render": null,
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000238034",
+      "ts": 1705747453.6650748,
+      "channel": "file",
+      "actor": "hr-004",
+      "action": "file.open",
+      "attrs": {
+        "asset": "customer_list",
+        "path": "/share/customer_list/index",
+        "breadth": 29,
+        "out_of_pattern": true
+      },
+      "label": "precursor",
+      "episode_id": "ep-hr-004-39",
+      "technique_ids": [
+        "T1087"
+      ],
+      "risk_state": 0.49755229366461035,
+      "render": null,
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000238033",
+      "ts": 1705760867.7940795,
+      "channel": "file",
+      "actor": "hr-004",
+      "action": "file.open",
+      "attrs": {
+        "asset": "mna",
+        "path": "/share/mna/index",
+        "breadth": 11,
+        "out_of_pattern": true
+      },
+      "label": "precursor",
+      "episode_id": "ep-hr-004-39",
+      "technique_ids": [
+        "T1087"
+      ],
+      "risk_state": 0.49755229366461035,
+      "render": null,
+      "causal_parent": ""
+    }
+  ],
+  "malicious": [
+    {
+      "event_id": "e000309850",
+      "ts": 1706266059.333761,
+      "channel": "email",
+      "actor": "pm-007",
+      "action": "email.send",
+      "attrs": {
+        "to_internal": false,
+        "external_domain": "outlook.personal.example",
+        "n_attachments": 2,
+        "size_kb": 7335,
+        "asset": "customer_list",
+        "wants_render": true
+      },
+      "label": "malicious",
+      "episode_id": "ep-pm-007-25",
+      "technique_ids": [
+        "T1052",
+        "T1567"
+      ],
+      "risk_state": 0.5654054194410919,
+      "render": {
+        "subject": "accounts files",
+        "body": "Hi team,\n\nAttaching the accounts package. Flag any questions before end of day.\n\nRegards,"
+      },
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000309851",
+      "ts": 1706313240.0,
+      "channel": "device",
+      "actor": "pm-007",
+      "action": "device.connect",
+      "attrs": {
+        "kind": "usb_storage",
+        "host": "HOST-PM-007",
+        "approved": false
+      },
+      "label": "malicious",
+      "episode_id": "ep-pm-007-25",
+      "technique_ids": [
+        "T1052",
+        "T1567"
+      ],
+      "risk_state": 0.5654054194410919,
+      "render": null,
+      "causal_parent": ""
+    },
+    {
+      "event_id": "e000309852",
+      "ts": 1706313360.0,
+      "channel": "file",
+      "actor": "pm-007",
+      "action": "file.copy",
+      "attrs": {
+        "asset": "pii",
+        "removable": true,
+        "size_kb": 1459,
+        "n_files": 11
+      },
+      "label": "malicious",
+      "episode_id": "ep-pm-007-25",
+      "technique_ids": [
+        "T1052",
+        "T1567"
+      ],
+      "risk_state": 0.5654054194410919,
+      "render": null,
+      "causal_parent": ""
+    }
+  ]
+}

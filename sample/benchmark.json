@@ -1,0 +1,220 @@
+{
+  "dataset": "sample_tech",
+  "n_userdays": 8400,
+  "n_malicious_userdays": 32,
+  "userday_prevalence": 0.00381,
+  "review_budget": 0.01,
+  "splits": {
+    "temporal": {
+      "volume_rule": {
+        "n_test": 2520,
+        "n_positive": 17,
+        "prevalence": 0.006746,
+        "roc_auc": 0.6137,
+        "pr_auc": 0.009,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.0,
+        "recall_at_budget": 0.0,
+        "insiders_detected": 0,
+        "insiders_total": 5,
+        "median_detection_lead_days": NaN,
+        "fp_anomalous_benign_share": 0.84
+      },
+      "user_zscore": {
+        "n_test": 2520,
+        "n_positive": 17,
+        "prevalence": 0.006746,
+        "roc_auc": 0.8323,
+        "pr_auc": 0.1011,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.12,
+        "recall_at_budget": 0.1765,
+        "insiders_detected": 4,
+        "insiders_total": 5,
+        "median_detection_lead_days": -4.0,
+        "fp_anomalous_benign_share": 0.0
+      },
+      "logreg": {
+        "n_test": 2520,
+        "n_positive": 17,
+        "prevalence": 0.006746,
+        "roc_auc": 0.7521,
+        "pr_auc": 0.3935,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.28,
+        "recall_at_budget": 0.4118,
+        "insiders_detected": 3,
+        "insiders_total": 5,
+        "median_detection_lead_days": -3.0,
+        "fp_anomalous_benign_share": 0.0556
+      },
+      "isolation_forest": {
+        "n_test": 2520,
+        "n_positive": 17,
+        "prevalence": 0.006746,
+        "roc_auc": 0.6219,
+        "pr_auc": 0.0719,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.04,
+        "recall_at_budget": 0.0588,
+        "insiders_detected": 1,
+        "insiders_total": 5,
+        "median_detection_lead_days": -6.0,
+        "fp_anomalous_benign_share": 0.125
+      }
+    },
+    "user_holdout": {
+      "volume_rule": {
+        "n_test": 2520,
+        "n_positive": 8,
+        "prevalence": 0.003175,
+        "roc_auc": 0.4646,
+        "pr_auc": 0.0031,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.0,
+        "recall_at_budget": 0.0,
+        "insiders_detected": 0,
+        "insiders_total": 1,
+        "median_detection_lead_days": NaN,
+        "fp_anomalous_benign_share": 1.0
+      },
+      "user_zscore": {
+        "n_test": 2520,
+        "n_positive": 8,
+        "prevalence": 0.003175,
+        "roc_auc": 0.7682,
+        "pr_auc": 0.1345,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.04,
+        "recall_at_budget": 0.125,
+        "insiders_detected": 1,
+        "insiders_total": 1,
+        "median_detection_lead_days": -5.0,
+        "fp_anomalous_benign_share": 0.8333
+      },
+      "logreg": {
+        "n_test": 2520,
+        "n_positive": 8,
+        "prevalence": 0.003175,
+        "roc_auc": 0.8812,
+        "pr_auc": 0.3996,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.2,
+        "recall_at_budget": 0.625,
+        "insiders_detected": 1,
+        "insiders_total": 1,
+        "median_detection_lead_days": 0.0,
+        "fp_anomalous_benign_share": 0.1
+      },
+      "isolation_forest": {
+        "n_test": 2520,
+        "n_positive": 8,
+        "prevalence": 0.003175,
+        "roc_auc": 0.8011,
+        "pr_auc": 0.0768,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.04,
+        "recall_at_budget": 0.125,
+        "insiders_detected": 1,
+        "insiders_total": 1,
+        "median_detection_lead_days": -2.0,
+        "fp_anomalous_benign_share": 0.4583
+      }
+    },
+    "scenario_holdout": {
+      "volume_rule": {
+        "n_test": 2450,
+        "n_positive": 23,
+        "prevalence": 0.009388,
+        "roc_auc": 0.5474,
+        "pr_auc": 0.0103,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.0,
+        "recall_at_budget": 0.0,
+        "insiders_detected": 0,
+        "insiders_total": 3,
+        "median_detection_lead_days": NaN,
+        "fp_anomalous_benign_share": 0.875
+      },
+      "user_zscore": {
+        "n_test": 2450,
+        "n_positive": 23,
+        "prevalence": 0.009388,
+        "roc_auc": 0.7938,
+        "pr_auc": 0.1169,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.0833,
+        "recall_at_budget": 0.087,
+        "insiders_detected": 2,
+        "insiders_total": 3,
+        "median_detection_lead_days": -5.5,
+        "fp_anomalous_benign_share": 0.7273
+      },
+      "logreg": {
+        "n_test": 2450,
+        "n_positive": 23,
+        "prevalence": 0.009388,
+        "roc_auc": 0.7393,
+        "pr_auc": 0.3528,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.3333,
+        "recall_at_budget": 0.3478,
+        "insiders_detected": 3,
+        "insiders_total": 3,
+        "median_detection_lead_days": 8.0,
+        "fp_anomalous_benign_share": 0.0
+      },
+      "isolation_forest": {
+        "n_test": 2450,
+        "n_positive": 23,
+        "prevalence": 0.009388,
+        "roc_auc": 0.6971,
+        "pr_auc": 0.0527,
+        "review_budget": 0.01,
+        "precision_at_budget": 0.0833,
+        "recall_at_budget": 0.087,
+        "insiders_detected": 2,
+        "insiders_total": 3,
+        "median_detection_lead_days": -4.0,
+        "fp_anomalous_benign_share": 0.5
+      },
+      "_held_out_pathways": [
+        "ip_theft"
+      ]
+    }
+  },
+  "audits": {
+    "shortcut": {
+      "n_test": 2520,
+      "n_positive": 17,
+      "trivial_rule_roc_auc": 0.6137,
+      "trivial_rule_pr_auc": 0.009,
+      "full_model_roc_auc": 0.7521,
+      "full_model_pr_auc": 0.3935,
+      "signal_depth_pr_gap": 0.3845,
+      "interpretation": "Lower trivial_rule_* and a positive signal_depth_pr_gap indicate the dataset resists the single-rule shortcut that inflates CERT scores."
+    },
+    "stylized_facts": {
+      "events_total": 797328,
+      "events_per_userday_mean": 121.3,
+      "events_per_userday_p50": 127.0,
+      "events_per_userday_p95": 160.0,
+      "after_hours_fraction": 0.188,
+      "weekend_fraction": 0.0165,
+      "work_hour_concentration": 0.812,
+      "channel_share": {
+        "chat": 0.1597,
+        "device": 0.0007,
+        "email": 0.1064,
+        "endpoint": 0.1109,
+        "file": 0.2246,
+        "hr": 0.0002,
+        "http": 0.3193,
+        "idp": 0.0327,
+        "logon": 0.0164,
+        "ticket": 0.0291
+      },
+      "plausible": true
+    }
+  }
+}

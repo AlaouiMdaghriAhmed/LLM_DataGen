@@ -1,0 +1,101 @@
+{
+  "config": {
+    "seed": 11,
+    "name": "sample_tech",
+    "domain": "tech",
+    "n_employees": 120,
+    "insider_prevalence": 0.06,
+    "anomalous_benign_rate": 0.08,
+    "start_date": "2024-01-01",
+    "horizon_days": 70,
+    "workday_start_hour": 8.0,
+    "workday_end_hour": 18.0,
+    "lunch_hours": [
+      12.0,
+      13.0
+    ],
+    "activity_scale": 1.0,
+    "behavior_dropout": 0.05,
+    "max_active_episodes": null,
+    "enabled_playbooks": [],
+    "channel_coverage": {
+      "endpoint": 0.7,
+      "http": 0.9,
+      "chat": 0.8
+    },
+    "sensor_dropout": 0.02,
+    "renderer": "template",
+    "render_fraction": 1.0,
+    "model": "claude-opus-4-8",
+    "render_max_events": null
+  },
+  "summary": {
+    "name": "sample_tech",
+    "domain": "tech",
+    "n_employees": 120,
+    "horizon_days": 70,
+    "n_events_full": 797328,
+    "n_events_observed": 705641,
+    "activated_insiders": 5,
+    "insider_population": 7,
+    "anomalous_benign_population": 10,
+    "label_counts_full": {
+      "benign": 792555,
+      "anomalous_benign": 4560,
+      "precursor": 139,
+      "malicious": 74
+    },
+    "label_counts_observed": {
+      "benign": 701568,
+      "anomalous_benign": 3864,
+      "precursor": 136,
+      "malicious": 73
+    },
+    "observability": {
+      "total_events": 797328,
+      "observed_events": 705641,
+      "dropped_events": 91687,
+      "dropped_malicious_events": 1,
+      "effective_recall_ceiling": 0.9865,
+      "per_channel_coverage": {
+        "logon": 1.0,
+        "idp": 1.0,
+        "device": 1.0,
+        "file": 1.0,
+        "email": 1.0,
+        "http": 0.9,
+        "chat": 0.8,
+        "ticket": 1.0,
+        "vcs": 1.0,
+        "dlp": 1.0,
+        "endpoint": 0.7,
+        "hr": 1.0
+      }
+    }
+  },
+  "n_episodes": 5,
+  "technique_ids_in_data": [
+    "T1005",
+    "T1048",
+    "T1052",
+    "T1074",
+    "T1083",
+    "T1087",
+    "T1114",
+    "T1567",
+    "T1567.002"
+  ],
+  "render": {
+    "backend": "template",
+    "plans": 163858,
+    "rendered": 163858,
+    "lint": {
+      "scanned_fields": 256323,
+      "flagged_fields": 0,
+      "redactions": 0,
+      "leak_rate": 0.0,
+      "term_hits": {}
+    },
+    "backend_stats": {}
+  }
+}

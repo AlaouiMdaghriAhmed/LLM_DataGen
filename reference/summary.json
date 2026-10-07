@@ -1,0 +1,44 @@
+{
+  "name": "finance_reference",
+  "domain": "finance",
+  "n_employees": 1000,
+  "horizon_days": 120,
+  "n_events_full": 9132134,
+  "n_events_observed": 7827513,
+  "activated_insiders": 6,
+  "insider_population": 8,
+  "anomalous_benign_population": 80,
+  "label_counts_full": {
+    "benign": 9107771,
+    "anomalous_benign": 24103,
+    "precursor": 199,
+    "malicious": 61
+  },
+  "label_counts_observed": {
+    "benign": 7807629,
+    "anomalous_benign": 19631,
+    "precursor": 193,
+    "malicious": 60
+  },
+  "observability": {
+    "total_events": 9132134,
+    "observed_events": 7827513,
+    "dropped_events": 1304621,
+    "dropped_malicious_events": 1,
+    "effective_recall_ceiling": 0.9836,
+    "per_channel_coverage": {
+      "logon": 1.0,
+      "idp": 0.95,
+      "device": 1.0,
+      "file": 1.0,
+      "email": 1.0,
+      "http": 0.85,
+      "chat": 0.75,
+      "ticket": 1.0,
+      "vcs": 1.0,
+      "dlp": 1.0,
+      "endpoint": 0.6,
+      "hr": 1.0
+    }
+  }
+}

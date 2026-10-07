@@ -1,0 +1,6 @@
+user,scenario,onset_day,episode_end,dataset
+eng-011,ip_theft,49,58,sample_tech
+pm-002,ip_theft,56,60,sample_tech
+pm-007,ip_theft,25,32,sample_tech
+sales-011,data_leak,47,50,sample_tech
+hr-004,data_leak,39,43,sample_tech

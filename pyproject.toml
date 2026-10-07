@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "synthitd"
+version = "0.1.0"
+description = "Reproducible generator and honest benchmark for insider-threat detection, with endogenous critical-pathway intent, a label-blind LLM renderer, engineered hard negatives, and a CERT-compatible export."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "LLM_DataGen contributors" }]
+keywords = ["insider threat", "synthetic data", "benchmark", "security", "CERT"]
+dependencies = [
+    "numpy>=1.24",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+llm = ["anthropic>=0.40"]
+bench = ["scikit-learn>=1.2"]
+dev = ["pytest>=7.0", "scikit-learn>=1.2"]
+
+[project.scripts]
+synthitd = "synthitd.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["synthitd*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
