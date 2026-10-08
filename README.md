@@ -189,8 +189,12 @@ configs in one repo), build it first and push the folder:
 
 ```bash
 python scripts/build_release.py 500 120 out/synthitd_release   # ~17M events, ~11 GB
-python scripts/publish_hf.py --repo-id <user>/synthitd --from-dir out/synthitd_release --public
+python scripts/publish_hf.py --repo-id <user>/synthitd --from-dir out/synthitd_release --public --clean
 ```
+
+`--from-dir` uploads a prepared folder **as-is** (no regeneration, keeps its
+multi-config card); `--clean` makes the Hub repo mirror the folder exactly, removing
+any stale files from an earlier upload.
 
 ## Documentation
 
