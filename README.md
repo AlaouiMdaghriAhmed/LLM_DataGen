@@ -184,6 +184,14 @@ The script materialises the dataset deterministically, drops in the HF dataset c
 and `upload_folder`s it to a Hub `dataset` repo (`labels_userday.csv` is the default
 viewer config). Requires network access to `huggingface.co`.
 
+For a larger **multi-domain** release (tech + finance + healthcare as three viewer
+configs in one repo), build it first and push the folder:
+
+```bash
+python scripts/build_release.py 500 120 out/synthitd_release   # ~17M events, ~11 GB
+python scripts/publish_hf.py --repo-id <user>/synthitd --from-dir out/synthitd_release --public
+```
+
 ## Documentation
 
 - [`docs/LITERATURE_REVIEW.md`](docs/LITERATURE_REVIEW.md) — gap analysis vs CERT,
