@@ -167,6 +167,31 @@ The Anthropic backend (`claude-opus-4-8` by default) renders only label-blind
 requests, graceful fallback to the template renderer, and an offline
 `render_via_batch_api` path (50 % cheaper). It can never see or emit the label.
 
+## Publish to the Hugging Face Hub
+
+A dataset card (`hf/README.md`) and a one-command publisher are included:
+
+```bash
+pip install -e ".[hf]"
+export HF_TOKEN=hf_xxx            # or: huggingface-cli login
+# generate an instance and push it (private by default; add --public to share)
+python scripts/publish_hf.py --repo-id <user>/synthitd --domain tech --employees 60 --days 60 --seed 7
+# or push an already-generated directory as-is
+python scripts/publish_hf.py --repo-id <user>/synthitd --from-dir out/demo_tech
+```
+
+The script materialises the dataset deterministically, drops in the HF dataset card,
+and `upload_folder`s it to a Hub `dataset` repo (`labels_userday.csv` is the default
+viewer config). Requires network access to `huggingface.co`.
+
+For a larger **multi-domain** release (tech + finance + healthcare as three viewer
+configs in one repo), build it first and push the folder:
+
+```bash
+python scripts/build_release.py 500 120 out/synthitd_release   # ~17M events, ~11 GB
+python scripts/publish_hf.py --repo-id <user>/synthitd --from-dir out/synthitd_release --public
+```
+
 ## Documentation
 
 - [`docs/LITERATURE_REVIEW.md`](docs/LITERATURE_REVIEW.md) — gap analysis vs CERT,

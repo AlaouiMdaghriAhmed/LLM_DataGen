@@ -20,6 +20,7 @@ dependencies = [
 llm = ["anthropic>=0.40"]
 bench = ["scikit-learn>=1.2"]
 sota = ["scikit-learn>=1.2", "torch>=2.0"]   # UBS-Transformer reimplementation
+hf = ["huggingface_hub>=0.20"]               # publish to the Hugging Face Hub
 dev = ["pytest>=7.0", "scikit-learn>=1.2"]
 
 [project.scripts]
