@@ -162,6 +162,8 @@ class ThreatEngine:
     def stealth(self, emp: Employee, traj: RiskTrajectory) -> float:
         """0 = reckless/obvious, 1 = highly covert. Higher conscientiousness and a
         slow-building risk curve imply more covert behaviour (harder to detect)."""
+        if self.cfg.legacy_cert_mode:
+            return 0.0  # CERT regime: reckless, fixed obvious signature
         g = self.rng.stream("stealth", emp.emp_id)
         shape = float(np.clip(traj.risk[: (traj.onset_day or 1)].std() * 2, 0, 0.4))
         return float(np.clip(0.3 + 0.5 * emp.ocean["conscientiousness"] - shape + 0.1 * g.random(), 0, 1))
@@ -228,7 +230,7 @@ class ThreatEngine:
             # population; reckless ones use the obvious removable / filehost route.
             # There is therefore no single exfil channel that marks the positive
             # class — detection needs the joint, per-user-relative pattern (R6).
-            if g.random() < (0.3 + 0.6 * stealth):
+            if not self.cfg.legacy_cert_mode and g.random() < (0.3 + 0.6 * stealth):
                 roll = g.random()
                 if roll < 0.55:
                     bus.emit(ts, Channel.HTTP, emp.emp_id, "http.upload",

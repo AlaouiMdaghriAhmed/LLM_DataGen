@@ -128,6 +128,32 @@ The lesson the dataset is built to teach: at realistic prevalence, detection liv
 the **behavioural trajectory** (escalation along the Critical Pathway), not in any
 single day or signature — and modelling it buys ~2 weeks of early warning.
 
+### Running a SOTA CERT detector on it
+
+Full write-up: `docs/SOTA_COMPARISON.md`.
+
+**The best-reported SOTA architecture, reimplemented.** We took the strongest recent
+CERT architecture with a specified design — the **UBS-Transformer** (user-based
+sequencing + a 6-layer/512/8 reconstruction Transformer encoder + OCSVM/LOF/iForest
+on reconstruction errors; arXiv:2506.23446, which reports **AUROC 0.95 / F1 0.96** on
+CERT), reimplemented it faithfully (`synthitd/benchmark/ubs_transformer.py`), and ran
+it per user. On a CERT-regime version of our data it reproduces the paper's regime
+(AUROC 0.87–0.89); on the **realistic** data the *same architecture collapses to
+AUROC 0.64 / F1 0.43** (iForest) — the headline number does not transfer. Reproduce:
+`PYTHONPATH=. python scripts/ubs_experiment.py 400 120 13 12` (needs `pip install
+torch`; writes `reference/ubs_transformer_comparison.json`).
+
+**The SOTA recipe family, ablated (5 seeds).** Reference reimplementations of the
+dominant CERT recipes (random forest / gradient boosting / MLP on user-day features,
+a reconstruction autoencoder, and a temporal GBDT) on a CERT-regime vs realistic
+ablation: **every classical detector loses 43–92 % of its PR-AUC and ~0.1 ROC**; on
+realistic data all are weak in PR-AUC (near the ~0.0017 no-skill floor), and only the
+temporal model stays regime-robust on ranking and catches ~2.5× more insiders under a
+fixed review budget on **unseen users**. Reproduce: `PYTHONPATH=. python
+scripts/sota_experiment.py 300 120 5` (writes `reference/sota_comparison.json`). The
+doc states its own threats to validity (under-power, the joint ablation, PCA-AE as a
+stand-in).
+
 ## Use the Claude renderer (optional)
 
 ```bash

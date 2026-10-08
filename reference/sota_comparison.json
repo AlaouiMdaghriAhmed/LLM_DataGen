@@ -1,0 +1,1087 @@
+{
+  "config": {
+    "domain": "tech",
+    "n_employees": 300,
+    "horizon_days": 120,
+    "insider_prevalence": 0.05,
+    "anomalous_benign_rate": 0.1,
+    "seeds": [
+      13,
+      20,
+      27,
+      34,
+      41
+    ]
+  },
+  "note": "Controlled ablation: both regimes share org/seed/prevalence/splits and differ only in legacy_cert_mode, which degenerately toggles the whole anti-shortcut regime (benign upload/removable + benign after-hours + benign-anomaly bursts + insider stealth). SOTA detectors are reference reimplementations of published CERT recipes over the same leakage-safe user-day features. The isolated signature effect is in the shortcut_audit.",
+  "cert_regime_aggregate": {
+    "splits": {
+      "temporal": {
+        "n_positive_mean": 32.2,
+        "sota_random_forest": {
+          "roc_auc_mean": 0.8787,
+          "roc_auc_std": 0.0588,
+          "pr_auc_mean": 0.6862,
+          "pr_auc_std": 0.1265,
+          "recall_at_1pct_mean": 0.7137,
+          "recall_at_1pct_std": 0.1336
+        },
+        "sota_gbdt": {
+          "roc_auc_mean": 0.8604,
+          "roc_auc_std": 0.0393,
+          "pr_auc_mean": 0.5978,
+          "pr_auc_std": 0.1314,
+          "recall_at_1pct_mean": 0.6112,
+          "recall_at_1pct_std": 0.1273
+        },
+        "sota_mlp": {
+          "roc_auc_mean": 0.825,
+          "roc_auc_std": 0.0639,
+          "pr_auc_mean": 0.6425,
+          "pr_auc_std": 0.1158,
+          "recall_at_1pct_mean": 0.6449,
+          "recall_at_1pct_std": 0.1158
+        },
+        "sota_autoencoder": {
+          "roc_auc_mean": 0.88,
+          "roc_auc_std": 0.0353,
+          "pr_auc_mean": 0.6793,
+          "pr_auc_std": 0.122,
+          "recall_at_1pct_mean": 0.691,
+          "recall_at_1pct_std": 0.1097
+        },
+        "sota_seq_gbdt": {
+          "roc_auc_mean": 0.9656,
+          "roc_auc_std": 0.0224,
+          "pr_auc_mean": 0.4454,
+          "pr_auc_std": 0.2378,
+          "recall_at_1pct_mean": 0.7189,
+          "recall_at_1pct_std": 0.2015
+        }
+      },
+      "user_holdout": {
+        "n_positive_mean": 19.2,
+        "sota_random_forest": {
+          "roc_auc_mean": 0.7438,
+          "roc_auc_std": 0.1482,
+          "pr_auc_mean": 0.4474,
+          "pr_auc_std": 0.3075,
+          "recall_at_1pct_mean": 0.4755,
+          "recall_at_1pct_std": 0.2648
+        },
+        "sota_gbdt": {
+          "roc_auc_mean": 0.7292,
+          "roc_auc_std": 0.1263,
+          "pr_auc_mean": 0.2594,
+          "pr_auc_std": 0.1802,
+          "recall_at_1pct_mean": 0.28,
+          "recall_at_1pct_std": 0.1494
+        },
+        "sota_mlp": {
+          "roc_auc_mean": 0.6225,
+          "roc_auc_std": 0.2359,
+          "pr_auc_mean": 0.4266,
+          "pr_auc_std": 0.2806,
+          "recall_at_1pct_mean": 0.4381,
+          "recall_at_1pct_std": 0.2623
+        },
+        "sota_autoencoder": {
+          "roc_auc_mean": 0.7597,
+          "roc_auc_std": 0.0957,
+          "pr_auc_mean": 0.4318,
+          "pr_auc_std": 0.3026,
+          "recall_at_1pct_mean": 0.4471,
+          "recall_at_1pct_std": 0.2755
+        },
+        "sota_seq_gbdt": {
+          "roc_auc_mean": 0.9798,
+          "roc_auc_std": 0.0163,
+          "pr_auc_mean": 0.2126,
+          "pr_auc_std": 0.0622,
+          "recall_at_1pct_mean": 0.7516,
+          "recall_at_1pct_std": 0.2475
+        }
+      }
+    },
+    "activated_insiders_mean": 11.4,
+    "prevalence_mean": 0.001689
+  },
+  "realistic_aggregate": {
+    "splits": {
+      "temporal": {
+        "n_positive_mean": 32.2,
+        "sota_random_forest": {
+          "roc_auc_mean": 0.7727,
+          "roc_auc_std": 0.0515,
+          "pr_auc_mean": 0.3634,
+          "pr_auc_std": 0.1272,
+          "recall_at_1pct_mean": 0.4368,
+          "recall_at_1pct_std": 0.1015
+        },
+        "sota_gbdt": {
+          "roc_auc_mean": 0.6099,
+          "roc_auc_std": 0.0796,
+          "pr_auc_mean": 0.0493,
+          "pr_auc_std": 0.0304,
+          "recall_at_1pct_mean": 0.1482,
+          "recall_at_1pct_std": 0.068
+        },
+        "sota_mlp": {
+          "roc_auc_mean": 0.6524,
+          "roc_auc_std": 0.0456,
+          "pr_auc_mean": 0.3412,
+          "pr_auc_std": 0.0919,
+          "recall_at_1pct_mean": 0.375,
+          "recall_at_1pct_std": 0.1066
+        },
+        "sota_autoencoder": {
+          "roc_auc_mean": 0.8172,
+          "roc_auc_std": 0.048,
+          "pr_auc_mean": 0.2815,
+          "pr_auc_std": 0.1301,
+          "recall_at_1pct_mean": 0.3173,
+          "recall_at_1pct_std": 0.1154
+        },
+        "sota_seq_gbdt": {
+          "roc_auc_mean": 0.879,
+          "roc_auc_std": 0.0537,
+          "pr_auc_mean": 0.1111,
+          "pr_auc_std": 0.0556,
+          "recall_at_1pct_mean": 0.3472,
+          "recall_at_1pct_std": 0.1887
+        }
+      },
+      "user_holdout": {
+        "n_positive_mean": 19.2,
+        "sota_random_forest": {
+          "roc_auc_mean": 0.6797,
+          "roc_auc_std": 0.1126,
+          "pr_auc_mean": 0.2349,
+          "pr_auc_std": 0.1487,
+          "recall_at_1pct_mean": 0.2747,
+          "recall_at_1pct_std": 0.1868
+        },
+        "sota_gbdt": {
+          "roc_auc_mean": 0.6203,
+          "roc_auc_std": 0.0806,
+          "pr_auc_mean": 0.0572,
+          "pr_auc_std": 0.0458,
+          "recall_at_1pct_mean": 0.1774,
+          "recall_at_1pct_std": 0.0632
+        },
+        "sota_mlp": {
+          "roc_auc_mean": 0.5085,
+          "roc_auc_std": 0.161,
+          "pr_auc_mean": 0.2414,
+          "pr_auc_std": 0.1462,
+          "recall_at_1pct_mean": 0.2607,
+          "recall_at_1pct_std": 0.156
+        },
+        "sota_autoencoder": {
+          "roc_auc_mean": 0.7386,
+          "roc_auc_std": 0.0623,
+          "pr_auc_mean": 0.2172,
+          "pr_auc_std": 0.168,
+          "recall_at_1pct_mean": 0.2523,
+          "recall_at_1pct_std": 0.1818
+        },
+        "sota_seq_gbdt": {
+          "roc_auc_mean": 0.9353,
+          "roc_auc_std": 0.0603,
+          "pr_auc_mean": 0.167,
+          "pr_auc_std": 0.0669,
+          "recall_at_1pct_mean": 0.6799,
+          "recall_at_1pct_std": 0.258
+        }
+      }
+    },
+    "activated_insiders_mean": 11.4,
+    "prevalence_mean": 0.001689
+  },
+  "cert_regime_per_seed": [
+    {
+      "activated_insiders": 12,
+      "n_userdays": 36000,
+      "n_malicious": 72,
+      "prevalence": 0.002,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 25,
+          "sota_random_forest": {
+            "roc_auc": 0.9686,
+            "pr_auc": 0.841,
+            "recall_at_1pct": 0.88,
+            "precision_at_1pct": 0.2037,
+            "fp_anomalous_benign_share": 0.0814,
+            "median_lead_days": -0.5
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.8569,
+            "pr_auc": 0.6662,
+            "recall_at_1pct": 0.68,
+            "precision_at_1pct": 0.1574,
+            "fp_anomalous_benign_share": 0.0549,
+            "median_lead_days": -8.5
+          },
+          "sota_mlp": {
+            "roc_auc": 0.8823,
+            "pr_auc": 0.7225,
+            "recall_at_1pct": 0.72,
+            "precision_at_1pct": 0.1667,
+            "fp_anomalous_benign_share": 0.0889,
+            "median_lead_days": -22.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.904,
+            "pr_auc": 0.8406,
+            "recall_at_1pct": 0.84,
+            "precision_at_1pct": 0.1944,
+            "fp_anomalous_benign_share": 0.2874,
+            "median_lead_days": 7.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9356,
+            "pr_auc": 0.2137,
+            "recall_at_1pct": 0.8,
+            "precision_at_1pct": 0.1852,
+            "fp_anomalous_benign_share": 0.1136,
+            "median_lead_days": 14.5
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 13,
+          "sota_random_forest": {
+            "roc_auc": 0.554,
+            "pr_auc": 0.0295,
+            "recall_at_1pct": 0.1538,
+            "precision_at_1pct": 0.0185,
+            "fp_anomalous_benign_share": 0.0283,
+            "median_lead_days": 8.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.5166,
+            "pr_auc": 0.0135,
+            "recall_at_1pct": 0.1538,
+            "precision_at_1pct": 0.0185,
+            "fp_anomalous_benign_share": 0.0094,
+            "median_lead_days": 16.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.2689,
+            "pr_auc": 0.0267,
+            "recall_at_1pct": 0.0769,
+            "precision_at_1pct": 0.0093,
+            "fp_anomalous_benign_share": 0.0093,
+            "median_lead_days": 44.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.6836,
+            "pr_auc": 0.0037,
+            "recall_at_1pct": 0.0769,
+            "precision_at_1pct": 0.0093,
+            "fp_anomalous_benign_share": 0.2243,
+            "median_lead_days": 30.5
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9962,
+            "pr_auc": 0.1536,
+            "recall_at_1pct": 1.0,
+            "precision_at_1pct": 0.1204,
+            "fp_anomalous_benign_share": 0.0632,
+            "median_lead_days": 14.0
+          }
+        }
+      }
+    },
+    {
+      "activated_insiders": 13,
+      "n_userdays": 36000,
+      "n_malicious": 66,
+      "prevalence": 0.001833,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 36,
+          "sota_random_forest": {
+            "roc_auc": 0.8132,
+            "pr_auc": 0.5371,
+            "recall_at_1pct": 0.5278,
+            "precision_at_1pct": 0.1759,
+            "fp_anomalous_benign_share": 0.0337,
+            "median_lead_days": 0.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.786,
+            "pr_auc": 0.449,
+            "recall_at_1pct": 0.4722,
+            "precision_at_1pct": 0.1574,
+            "fp_anomalous_benign_share": 0.033,
+            "median_lead_days": 4.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.7095,
+            "pr_auc": 0.5064,
+            "recall_at_1pct": 0.5,
+            "precision_at_1pct": 0.1667,
+            "fp_anomalous_benign_share": 0.0889,
+            "median_lead_days": 4.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8287,
+            "pr_auc": 0.5441,
+            "recall_at_1pct": 0.5278,
+            "precision_at_1pct": 0.1759,
+            "fp_anomalous_benign_share": 0.1798,
+            "median_lead_days": 4.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9819,
+            "pr_auc": 0.3452,
+            "recall_at_1pct": 0.7778,
+            "precision_at_1pct": 0.2593,
+            "fp_anomalous_benign_share": 0.0,
+            "median_lead_days": 12.5
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 14,
+          "sota_random_forest": {
+            "roc_auc": 0.713,
+            "pr_auc": 0.4314,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0882,
+            "median_lead_days": -0.5
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.7799,
+            "pr_auc": 0.4315,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.1078,
+            "median_lead_days": -0.5
+          },
+          "sota_mlp": {
+            "roc_auc": 0.5673,
+            "pr_auc": 0.4293,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0686,
+            "median_lead_days": 5.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.7104,
+            "pr_auc": 0.4329,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.2059,
+            "median_lead_days": 11.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9609,
+            "pr_auc": 0.3166,
+            "recall_at_1pct": 0.7143,
+            "precision_at_1pct": 0.0926,
+            "fp_anomalous_benign_share": 0.051,
+            "median_lead_days": 11.0
+          }
+        }
+      }
+    },
+    {
+      "activated_insiders": 10,
+      "n_userdays": 36000,
+      "n_malicious": 49,
+      "prevalence": 0.001361,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 29,
+          "sota_random_forest": {
+            "roc_auc": 0.8151,
+            "pr_auc": 0.5401,
+            "recall_at_1pct": 0.5862,
+            "precision_at_1pct": 0.1574,
+            "fp_anomalous_benign_share": 0.044,
+            "median_lead_days": 0.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.8962,
+            "pr_auc": 0.4611,
+            "recall_at_1pct": 0.4828,
+            "precision_at_1pct": 0.1296,
+            "fp_anomalous_benign_share": 0.0745,
+            "median_lead_days": -1.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.8292,
+            "pr_auc": 0.5087,
+            "recall_at_1pct": 0.5172,
+            "precision_at_1pct": 0.1389,
+            "fp_anomalous_benign_share": 0.043,
+            "median_lead_days": 0.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8981,
+            "pr_auc": 0.5367,
+            "recall_at_1pct": 0.6207,
+            "precision_at_1pct": 0.1667,
+            "fp_anomalous_benign_share": 0.3,
+            "median_lead_days": 4.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9555,
+            "pr_auc": 0.5807,
+            "recall_at_1pct": 0.6207,
+            "precision_at_1pct": 0.1667,
+            "fp_anomalous_benign_share": 0.1333,
+            "median_lead_days": 6.0
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 0,
+          "skipped": "no positives in test"
+        }
+      }
+    },
+    {
+      "activated_insiders": 11,
+      "n_userdays": 36000,
+      "n_malicious": 75,
+      "prevalence": 0.002083,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 48,
+          "sota_random_forest": {
+            "roc_auc": 0.8906,
+            "pr_auc": 0.7926,
+            "recall_at_1pct": 0.7917,
+            "precision_at_1pct": 0.3519,
+            "fp_anomalous_benign_share": 0.1429,
+            "median_lead_days": -1.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.8827,
+            "pr_auc": 0.7994,
+            "recall_at_1pct": 0.8125,
+            "precision_at_1pct": 0.3611,
+            "fp_anomalous_benign_share": 0.0725,
+            "median_lead_days": -1.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.8858,
+            "pr_auc": 0.7928,
+            "recall_at_1pct": 0.7917,
+            "precision_at_1pct": 0.3519,
+            "fp_anomalous_benign_share": 0.0857,
+            "median_lead_days": -1.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.921,
+            "pr_auc": 0.7765,
+            "recall_at_1pct": 0.7708,
+            "precision_at_1pct": 0.3426,
+            "fp_anomalous_benign_share": 0.2254,
+            "median_lead_days": 0.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9558,
+            "pr_auc": 0.2427,
+            "recall_at_1pct": 0.3958,
+            "precision_at_1pct": 0.1759,
+            "fp_anomalous_benign_share": 0.1573,
+            "median_lead_days": -1.5
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 55,
+          "sota_random_forest": {
+            "roc_auc": 0.9694,
+            "pr_auc": 0.8981,
+            "recall_at_1pct": 0.8909,
+            "precision_at_1pct": 0.4537,
+            "fp_anomalous_benign_share": 0.0847,
+            "median_lead_days": 7.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.8482,
+            "pr_auc": 0.1601,
+            "recall_at_1pct": 0.1091,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.1275,
+            "median_lead_days": -1.5
+          },
+          "sota_mlp": {
+            "roc_auc": 0.9012,
+            "pr_auc": 0.8203,
+            "recall_at_1pct": 0.8182,
+            "precision_at_1pct": 0.4167,
+            "fp_anomalous_benign_share": 0.127,
+            "median_lead_days": 0.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.9238,
+            "pr_auc": 0.8596,
+            "recall_at_1pct": 0.8545,
+            "precision_at_1pct": 0.4352,
+            "fp_anomalous_benign_share": 0.1148,
+            "median_lead_days": 19.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9664,
+            "pr_auc": 0.1993,
+            "recall_at_1pct": 0.3636,
+            "precision_at_1pct": 0.1852,
+            "fp_anomalous_benign_share": 0.1591,
+            "median_lead_days": 10.0
+          }
+        }
+      }
+    },
+    {
+      "activated_insiders": 11,
+      "n_userdays": 36000,
+      "n_malicious": 42,
+      "prevalence": 0.001167,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 23,
+          "sota_random_forest": {
+            "roc_auc": 0.9059,
+            "pr_auc": 0.72,
+            "recall_at_1pct": 0.7826,
+            "precision_at_1pct": 0.1667,
+            "fp_anomalous_benign_share": 0.1222,
+            "median_lead_days": 0.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.8803,
+            "pr_auc": 0.6133,
+            "recall_at_1pct": 0.6087,
+            "precision_at_1pct": 0.1296,
+            "fp_anomalous_benign_share": 0.1383,
+            "median_lead_days": -2.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.818,
+            "pr_auc": 0.6822,
+            "recall_at_1pct": 0.6957,
+            "precision_at_1pct": 0.1481,
+            "fp_anomalous_benign_share": 0.0978,
+            "median_lead_days": -2.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8482,
+            "pr_auc": 0.6985,
+            "recall_at_1pct": 0.6957,
+            "precision_at_1pct": 0.1481,
+            "fp_anomalous_benign_share": 0.2935,
+            "median_lead_days": 0.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9993,
+            "pr_auc": 0.8449,
+            "recall_at_1pct": 1.0,
+            "precision_at_1pct": 0.213,
+            "fp_anomalous_benign_share": 0.0235,
+            "median_lead_days": 6.0
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 14,
+          "sota_random_forest": {
+            "roc_auc": 0.7388,
+            "pr_auc": 0.4304,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0882,
+            "median_lead_days": 7.5
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.7723,
+            "pr_auc": 0.4324,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0686,
+            "median_lead_days": 2.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.7526,
+            "pr_auc": 0.4301,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0196,
+            "median_lead_days": -5.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.7209,
+            "pr_auc": 0.4311,
+            "recall_at_1pct": 0.4286,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.2745,
+            "median_lead_days": 12.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9958,
+            "pr_auc": 0.1808,
+            "recall_at_1pct": 0.9286,
+            "precision_at_1pct": 0.1204,
+            "fp_anomalous_benign_share": 0.0,
+            "median_lead_days": 13.5
+          }
+        }
+      }
+    }
+  ],
+  "realistic_per_seed": [
+    {
+      "activated_insiders": 12,
+      "n_userdays": 36000,
+      "n_malicious": 72,
+      "prevalence": 0.002,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 25,
+          "sota_random_forest": {
+            "roc_auc": 0.8133,
+            "pr_auc": 0.2567,
+            "recall_at_1pct": 0.36,
+            "precision_at_1pct": 0.0833,
+            "fp_anomalous_benign_share": 0.0606,
+            "median_lead_days": -6.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.5991,
+            "pr_auc": 0.0727,
+            "recall_at_1pct": 0.28,
+            "precision_at_1pct": 0.0648,
+            "fp_anomalous_benign_share": 0.0693,
+            "median_lead_days": 4.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.6514,
+            "pr_auc": 0.2335,
+            "recall_at_1pct": 0.24,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0294,
+            "median_lead_days": -6.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8151,
+            "pr_auc": 0.1458,
+            "recall_at_1pct": 0.2,
+            "precision_at_1pct": 0.0463,
+            "fp_anomalous_benign_share": 0.2621,
+            "median_lead_days": 7.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9327,
+            "pr_auc": 0.158,
+            "recall_at_1pct": 0.68,
+            "precision_at_1pct": 0.1574,
+            "fp_anomalous_benign_share": 0.0659,
+            "median_lead_days": 11.0
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 13,
+          "sota_random_forest": {
+            "roc_auc": 0.515,
+            "pr_auc": 0.0021,
+            "recall_at_1pct": 0.0,
+            "precision_at_1pct": 0.0,
+            "fp_anomalous_benign_share": 0.0648,
+            "median_lead_days": 47.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.5979,
+            "pr_auc": 0.0288,
+            "recall_at_1pct": 0.1538,
+            "precision_at_1pct": 0.0185,
+            "fp_anomalous_benign_share": 0.0283,
+            "median_lead_days": 27.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.2602,
+            "pr_auc": 0.0009,
+            "recall_at_1pct": 0.0,
+            "precision_at_1pct": 0.0,
+            "fp_anomalous_benign_share": 0.0463,
+            "median_lead_days": -12.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.6371,
+            "pr_auc": 0.0024,
+            "recall_at_1pct": 0.0,
+            "precision_at_1pct": 0.0,
+            "fp_anomalous_benign_share": 0.25,
+            "median_lead_days": 30.5
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9971,
+            "pr_auc": 0.1953,
+            "recall_at_1pct": 1.0,
+            "precision_at_1pct": 0.1204,
+            "fp_anomalous_benign_share": 0.0,
+            "median_lead_days": 15.0
+          }
+        }
+      }
+    },
+    {
+      "activated_insiders": 13,
+      "n_userdays": 36000,
+      "n_malicious": 66,
+      "prevalence": 0.001833,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 36,
+          "sota_random_forest": {
+            "roc_auc": 0.6889,
+            "pr_auc": 0.1699,
+            "recall_at_1pct": 0.2778,
+            "precision_at_1pct": 0.0926,
+            "fp_anomalous_benign_share": 0.0204,
+            "median_lead_days": -7.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.5295,
+            "pr_auc": 0.091,
+            "recall_at_1pct": 0.1111,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.0962,
+            "median_lead_days": -15.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.5652,
+            "pr_auc": 0.2247,
+            "recall_at_1pct": 0.25,
+            "precision_at_1pct": 0.0833,
+            "fp_anomalous_benign_share": 0.0606,
+            "median_lead_days": -7.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.7294,
+            "pr_auc": 0.1262,
+            "recall_at_1pct": 0.1667,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.1863,
+            "median_lead_days": 4.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.8684,
+            "pr_auc": 0.1961,
+            "recall_at_1pct": 0.4167,
+            "precision_at_1pct": 0.1389,
+            "fp_anomalous_benign_share": 0.0108,
+            "median_lead_days": -1.0
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 14,
+          "sota_random_forest": {
+            "roc_auc": 0.6362,
+            "pr_auc": 0.2341,
+            "recall_at_1pct": 0.2857,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.0481,
+            "median_lead_days": -1.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.7005,
+            "pr_auc": 0.0539,
+            "recall_at_1pct": 0.2857,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.0865,
+            "median_lead_days": 18.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.5104,
+            "pr_auc": 0.2734,
+            "recall_at_1pct": 0.2857,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.1058,
+            "median_lead_days": -1.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.7585,
+            "pr_auc": 0.1273,
+            "recall_at_1pct": 0.2143,
+            "precision_at_1pct": 0.0278,
+            "fp_anomalous_benign_share": 0.2381,
+            "median_lead_days": 11.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9934,
+            "pr_auc": 0.2632,
+            "recall_at_1pct": 0.7857,
+            "precision_at_1pct": 0.1019,
+            "fp_anomalous_benign_share": 0.0825,
+            "median_lead_days": 11.0
+          }
+        }
+      }
+    },
+    {
+      "activated_insiders": 10,
+      "n_userdays": 36000,
+      "n_malicious": 49,
+      "prevalence": 0.001361,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 29,
+          "sota_random_forest": {
+            "roc_auc": 0.7375,
+            "pr_auc": 0.4419,
+            "recall_at_1pct": 0.4828,
+            "precision_at_1pct": 0.1296,
+            "fp_anomalous_benign_share": 0.0532,
+            "median_lead_days": -1.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.7324,
+            "pr_auc": 0.0497,
+            "recall_at_1pct": 0.1379,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.0385,
+            "median_lead_days": -1.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.6929,
+            "pr_auc": 0.4055,
+            "recall_at_1pct": 0.4483,
+            "precision_at_1pct": 0.1204,
+            "fp_anomalous_benign_share": 0.0421,
+            "median_lead_days": -0.5
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8213,
+            "pr_auc": 0.3056,
+            "recall_at_1pct": 0.4138,
+            "precision_at_1pct": 0.1111,
+            "fp_anomalous_benign_share": 0.2708,
+            "median_lead_days": 5.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9015,
+            "pr_auc": 0.0548,
+            "recall_at_1pct": 0.2759,
+            "precision_at_1pct": 0.0741,
+            "fp_anomalous_benign_share": 0.05,
+            "median_lead_days": -3.5
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 0,
+          "skipped": "no positives in test"
+        }
+      }
+    },
+    {
+      "activated_insiders": 11,
+      "n_userdays": 36000,
+      "n_malicious": 75,
+      "prevalence": 0.002083,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 48,
+          "sota_random_forest": {
+            "roc_auc": 0.8011,
+            "pr_auc": 0.4999,
+            "recall_at_1pct": 0.5417,
+            "precision_at_1pct": 0.2407,
+            "fp_anomalous_benign_share": 0.0488,
+            "median_lead_days": -2.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.5248,
+            "pr_auc": 0.0268,
+            "recall_at_1pct": 0.125,
+            "precision_at_1pct": 0.0556,
+            "fp_anomalous_benign_share": 0.0882,
+            "median_lead_days": -7.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.6764,
+            "pr_auc": 0.429,
+            "recall_at_1pct": 0.4583,
+            "precision_at_1pct": 0.2037,
+            "fp_anomalous_benign_share": 0.093,
+            "median_lead_days": -0.5
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8675,
+            "pr_auc": 0.4693,
+            "recall_at_1pct": 0.4583,
+            "precision_at_1pct": 0.2037,
+            "fp_anomalous_benign_share": 0.2558,
+            "median_lead_days": 0.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.7799,
+            "pr_auc": 0.0699,
+            "recall_at_1pct": 0.1458,
+            "precision_at_1pct": 0.0648,
+            "fp_anomalous_benign_share": 0.0396,
+            "median_lead_days": -25.0
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 55,
+          "sota_random_forest": {
+            "roc_auc": 0.7809,
+            "pr_auc": 0.4105,
+            "recall_at_1pct": 0.5273,
+            "precision_at_1pct": 0.2685,
+            "fp_anomalous_benign_share": 0.0759,
+            "median_lead_days": 3.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.4982,
+            "pr_auc": 0.1325,
+            "recall_at_1pct": 0.1273,
+            "precision_at_1pct": 0.0648,
+            "fp_anomalous_benign_share": 0.0891,
+            "median_lead_days": -1.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.5557,
+            "pr_auc": 0.3949,
+            "recall_at_1pct": 0.4,
+            "precision_at_1pct": 0.2037,
+            "fp_anomalous_benign_share": 0.1279,
+            "median_lead_days": -1.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8066,
+            "pr_auc": 0.448,
+            "recall_at_1pct": 0.5091,
+            "precision_at_1pct": 0.2593,
+            "fp_anomalous_benign_share": 0.1875,
+            "median_lead_days": 19.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.8675,
+            "pr_auc": 0.1095,
+            "recall_at_1pct": 0.2909,
+            "precision_at_1pct": 0.1481,
+            "fp_anomalous_benign_share": 0.163,
+            "median_lead_days": 0.0
+          }
+        }
+      }
+    },
+    {
+      "activated_insiders": 11,
+      "n_userdays": 36000,
+      "n_malicious": 42,
+      "prevalence": 0.001167,
+      "splits": {
+        "temporal": {
+          "n_test": 10800,
+          "n_positive": 23,
+          "sota_random_forest": {
+            "roc_auc": 0.8229,
+            "pr_auc": 0.4487,
+            "recall_at_1pct": 0.5217,
+            "precision_at_1pct": 0.1111,
+            "fp_anomalous_benign_share": 0.0833,
+            "median_lead_days": -5.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.6636,
+            "pr_auc": 0.0065,
+            "recall_at_1pct": 0.087,
+            "precision_at_1pct": 0.0185,
+            "fp_anomalous_benign_share": 0.0566,
+            "median_lead_days": -10.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.6761,
+            "pr_auc": 0.4133,
+            "recall_at_1pct": 0.4783,
+            "precision_at_1pct": 0.1019,
+            "fp_anomalous_benign_share": 0.0412,
+            "median_lead_days": -4.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.8529,
+            "pr_auc": 0.3605,
+            "recall_at_1pct": 0.3478,
+            "precision_at_1pct": 0.0741,
+            "fp_anomalous_benign_share": 0.36,
+            "median_lead_days": -2.5
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.9123,
+            "pr_auc": 0.0767,
+            "recall_at_1pct": 0.2174,
+            "precision_at_1pct": 0.0463,
+            "fp_anomalous_benign_share": 0.0485,
+            "median_lead_days": 6.5
+          }
+        },
+        "user_holdout": {
+          "n_test": 10800,
+          "n_positive": 14,
+          "sota_random_forest": {
+            "roc_auc": 0.7868,
+            "pr_auc": 0.293,
+            "recall_at_1pct": 0.2857,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.0673,
+            "median_lead_days": -3.0
+          },
+          "sota_gbdt": {
+            "roc_auc": 0.6846,
+            "pr_auc": 0.0135,
+            "recall_at_1pct": 0.1429,
+            "precision_at_1pct": 0.0185,
+            "fp_anomalous_benign_share": 0.0377,
+            "median_lead_days": 71.0
+          },
+          "sota_mlp": {
+            "roc_auc": 0.7079,
+            "pr_auc": 0.2963,
+            "recall_at_1pct": 0.3571,
+            "precision_at_1pct": 0.0463,
+            "fp_anomalous_benign_share": 0.1456,
+            "median_lead_days": -10.0
+          },
+          "sota_autoencoder": {
+            "roc_auc": 0.752,
+            "pr_auc": 0.2911,
+            "recall_at_1pct": 0.2857,
+            "precision_at_1pct": 0.037,
+            "fp_anomalous_benign_share": 0.2788,
+            "median_lead_days": 20.0
+          },
+          "sota_seq_gbdt": {
+            "roc_auc": 0.883,
+            "pr_auc": 0.0998,
+            "recall_at_1pct": 0.6429,
+            "precision_at_1pct": 0.0833,
+            "fp_anomalous_benign_share": 0.0606,
+            "median_lead_days": 13.0
+          }
+        }
+      }
+    }
+  ]
+}

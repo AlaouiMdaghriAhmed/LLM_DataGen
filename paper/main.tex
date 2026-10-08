@@ -1,0 +1,409 @@
+\documentclass[11pt]{article}
+
+% ---- portable preamble: only standard CTAN packages, compiles offline ----
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{pifont}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[round]{natbib}
+\bibliographystyle{plainnat}
+
+\newcommand{\sys}{\textsc{synthitd}}
+\newcommand{\code}[1]{\texttt{\small #1}}
+
+\title{\textbf{\sys: A Reproducible, Endogenous-Intent Synthetic Benchmark\\
+for Insider-Threat Detection}}
+
+\author{
+  Ahmed Alaoui Mdaghri\thanks{Correspondence: \href{mailto:mad.mik788@gmail.com}{mad.mik788@gmail.com}}\\
+  \texttt{LLM\_DataGen} project
+}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Insider-threat detection (ITD) research is bottlenecked by data: real incidents are
+rare and sensitive, so a decade of work trains and evaluates almost entirely on the
+synthetic CERT corpus. Systematic review shows the resulting scores are inflated by
+balanced subsets, random splits, and a hand-scripted malicious population whose
+\emph{signature} a model can fingerprint instead of learning intent. Recent
+LLM-based successors improve realism (ChimeraLog) and verifiability (OrgForge-IT) but
+still \emph{inject} a scripted attack into a chosen user and ship neither a benign
+anomaly population nor a self-audit. We present \sys, a reproducible generator and an
+honest benchmark that targets these shortcomings. Its central idea is to
+\emph{grow} insider intent from a latent Critical-Pathway risk model
+(predisposition $\rightarrow$ stressors $\rightarrow$ concerning behaviour) with a
+hazard that decides whether and when a pathway activates, rather than injecting a
+script---so labels track latent intent, not a template. A deterministic, label-owning
+event bus produces multi-surface telemetry (logon, IdP, device, file, email, chat,
+ticketing, version control, HTTP, DLP, endpoint, HR) while a \emph{label-blind}
+language-model renderer produces free text that cannot leak the answer. The dataset
+ships graded labels (benign / anomalous-benign / precursor / malicious), an engineered
+benign-anomaly hard-negative population, a sensor-degradation model, and a CERT-r6.2
+compatible exporter. \sys{} also ships its own benchmark with temporal,
+user-held-out, and \emph{scenario-held-out} splits, operational metrics
+(AUC-PR at true prevalence, detection earliness, review-budget recall, false-positive
+attribution), and a leakage/shortcut audit. We show the single after-hours$+$removable
+$+$upload rule that nears ceiling on CERT collapses to PR-AUC $0.0004$ on \sys{}, and
+that a faithful reimplementation of the best-reported CERT architecture
+(UBS-Transformer; reported AUROC $0.95$/F1 $0.96$) drops to AUROC $0.64$/F1 $0.43$ on
+\sys. Everything is a deterministic function of a seed and regenerates for free.
+\end{abstract}
+
+\section{Introduction}
+Malicious insiders cause some of the costliest security incidents, yet detection
+research is constrained less by modelling than by \emph{data}. Real traces are scarce,
+privacy-laden, and legally fraught, so the field has standardised on the synthetic
+CERT Insider Threat Test Dataset~\citep{glasser2013bridging}. A decade of results built
+on CERT report near-perfect numbers that do not transfer to operations
+~\citep{jurisic2026decade}: the malicious users were generated from a handful of
+templates, so detectors learn the \emph{generator's} fingerprint---an after-hours
+logon followed by a removable-media copy and an upload---rather than intent. Reported
+performance is further inflated by evaluating on class-balanced subsets and random
+(non-temporal) splits.
+
+Two 2026 LLM-based datasets advance the state of the art. ChimeraLog
+~\citep{yu2026chimera} uses multi-agent LLMs to raise realism to near that of a real
+competition dataset, and shows classifiers that score $\sim$0.99 on CERT fall to
+$\sim$0.83 on it. OrgForge-IT~\citep{orgforgeit2026} makes ground truth an
+architectural guarantee by letting a deterministic engine own a \code{SimEvent} bus
+while LLMs render only prose. Both, however, still \emph{inject} a scripted attack
+into a chosen user and label at the granularity of the injected steps; neither ships a
+constructed benign-anomaly population or an audit of how much of its own signal is a
+generator artifact. MOLE~\citep{mole2026} reframes the problem for AI agents and
+confirms the field's move toward budget-aware, review-cost metrics.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+  \item \textbf{Endogenous intent.} Each employee carries a latent Critical-Pathway
+  risk trajectory~\citep{shaw2015critical,sofit2018}; a hazard model decides whether
+  and when a pathway activates. Many predisposed, stressed employees never activate and
+  remain hard negatives. The label tracks latent intent, defeating signature shortcuts.
+  \item \textbf{Deterministic bus $+$ label-blind renderer.} A typed event bus owns
+  identities, timestamps, causal links, and the graded label; an LLM renders only free
+  text and never sees the label, enforced by a leakage linter.
+  \item \textbf{Engineered hard negatives, graded labels, sensor model.} A benign-but-
+  anomalous population (travel, on-call, promotion, approved bulk export) produces
+  exfiltration-looking bursts with justifying context; labels are graded
+  (benign / anomalous-benign / precursor / malicious); an observability layer models
+  partial sensor coverage.
+  \item \textbf{An honest benchmark} with temporal, user-held-out, and
+  scenario-held-out splits; AUC-PR at true prevalence; detection earliness;
+  review-budget recall; false-positive attribution; and a shipped shortcut audit.
+  \item \textbf{Comparison to the best-reported CERT SOTA.} We faithfully reimplement
+  the UBS-Transformer~\citep{ubstransformer2025} and show its reported CERT performance
+  does not transfer to \sys. A CERT-r6.2 compatible exporter makes \sys{} a drop-in for
+  existing pipelines.
+\end{enumerate}
+
+This is a defensive, academic artifact: it models behaviour as detection-relevant
+observables and MITRE ATT\&CK technique \emph{labels}~\citep{ctid2022insider}, not
+operational tradecraft.
+
+\section{Background and Gap Analysis}
+\label{sec:gap}
+Table~\ref{tab:gap} situates \sys{} against the incumbent and its recent successors.
+CERT~\citep{glasser2013bridging} composes a topic model, a social graph, per-user
+OCEAN psychometrics and an LDAP role model to emit logon/device/file/email/HTTP logs;
+its authors are explicit that realism is bounded and malicious scenarios are
+hand-scripted and few. The canonical releases are r4.2 (1{,}000 users, dense), r5.2
+(2{,}000, 99 insiders), and r6.2 (4{,}000, 5 insiders, $\sim$0.1\% positives). The
+honest supervised SOTA on the full imbalanced population is a random forest on
+user-day features at ROC-AUC $\approx 0.979$ \citep{le2020granularity}; the inflated
+end reports $\geq 0.99$ on balanced/SMOTE subsets \citep{sivakrishna2025xgboost}.
+
+\begin{table}[t]
+\centering
+\caption{Capability comparison. \sys{} adds endogenous intent, graded labels, an
+engineered hard-negative population, a sensor model, and a shipped shortcut audit.}
+\label{tab:gap}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Capability & CERT r6.2 & ChimeraLog & OrgForge-IT & \textbf{\sys} \\
+\midrule
+Deterministic label-owning bus      & \ding{55} & $\sim$ & \checkmark & \checkmark \\
+Modern surfaces (chat/ticket/VCS/IdP)& \ding{55} & partial & \checkmark & \checkmark \\
+\textbf{Endogenous intent}          & \ding{55} & \ding{55} (injected) & \ding{55} (injected) & \textbf{\checkmark} \\
+\textbf{Graded labels}              & \ding{55} & \ding{55} & partial & \textbf{\checkmark} \\
+\textbf{Benign-anomaly hard negatives} & \ding{55} & \ding{55} & partial & \textbf{\checkmark} \\
+\textbf{Sensor-degradation model}   & \ding{55} & \ding{55} & \ding{55} & \textbf{\checkmark} \\
+Regeneratable at any size/prevalence& \ding{55} & expensive & \checkmark & \checkmark \\
+\textbf{Leakage / shortcut audit}   & \ding{55} & \ding{55} & \ding{55} & \textbf{\checkmark} \\
+Earliness \& review-budget metrics  & \ding{55} & \ding{55} & partial & \textbf{\checkmark} \\
+CERT-compatible export              & n/a & \ding{55} & \ding{55} & \textbf{\checkmark} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Generator Design}
+\label{sec:design}
+\sys{} is a deterministic function of a configuration (organisation size, horizon,
+prevalence, noise, seed). A single seed feeds a named-substream RNG, so independent
+concerns draw independently and the dataset is stable under unrelated code changes.
+
+\paragraph{Organisation.} Three data-sensitive domains (technology, finance,
+healthcare) define roles with privilege levels and sensitive-asset access. Each
+employee receives Big-Five (OCEAN) traits and a static \emph{predisposition}. Insiders
+are sampled super-linearly in predisposition (floored so anyone may become one), and a
+separate benign-anomaly population is assigned.
+
+\paragraph{Critical-Pathway psychology (endogenous intent).}
+For each employee and day $d$ we integrate a latent risk trajectory
+\begin{equation}
+r_d = \sigma\!\big(-1.9 + 2.4\,\pi + 1.3\,s_d + 1.1\,c_d + 1.6\,\iota_d + 0.6\,\delta_d\big),
+\end{equation}
+where $\pi$ is the static predisposition, $s_d$ an exponentially-decaying accumulation
+of life/HR stressors (negative review, passed-over promotion, sanction, financial
+hardship, resignation), $c_d$ a concerning-behaviour feedback term, $\iota_d$ a
+\emph{latent} intent-pressure ramp present only for the insider population, and
+$\delta_d$ autocorrelated drift. $\iota_d$ is never emitted as an observable feature,
+so it creates no shortcut; normal employees can still reach high risk through
+stressors, so high risk $\neq$ insider. A hazard converts elevated risk into a per-day
+activation probability; the first success is the onset day, and many insiders never
+activate within the horizon.
+
+\paragraph{Behaviour and hard negatives.} A baseline model emits per-day activity
+across twelve surfaces, modulated by role and personality. Legitimate power users
+(and, more heavily, the engineered benign-anomaly population) upload to the cloud, use
+removable media, and work after hours, so those features are \emph{not} markers of
+malice. Benign triggers (travel, on-call, promotion, crunch, approved bulk export)
+produce exfiltration-looking bursts \emph{paired with an observable HR context event}
+that explains them, making precision and false-positive attribution measurable.
+
+\paragraph{Threat pathways.} Five abstract, stage-based playbooks (IP theft, data
+leak, privilege misuse, fraud, sabotage markers) fire only for activated insiders.
+Each stage emits the same typed events as the baseline, differing in target, volume,
+timing, and label, and carries MITRE ATT\&CK technique-id labels (15 distinct
+techniques). A per-insider \emph{stealth} level (from conscientiousness and the
+risk-curve shape) spreads covert actors into work hours, small volumes, and
+benign-looking channels, while variant sampling randomises target, channel, and
+staging order---so the positive class is a distribution, not a template.
+
+\paragraph{Observability and label-blind rendering.} An observability layer applies
+per-channel coverage and dropout to produce the \emph{observed} stream a detector
+sees, retaining the full stream for evaluation and reporting how much malicious signal
+was rendered invisible. Free-text surfaces are produced by a separate pass given only a
+label-free \code{ContentPlan}; a leakage linter redacts any label term or technique id.
+Consequently the renderer writes ordinary prose for malicious events too, forcing
+detectors onto behavioural signal rather than keyword matching.
+
+\section{Dataset}
+\label{sec:dataset}
+Every observable is an \code{Event} with a channel, actor, action, structured
+attributes, a graded \code{Label}, optional MITRE technique ids, the latent risk at
+event time, a causal parent, and an optional rendered-text payload. Labels are graded:
+\emph{benign}; \emph{anomalous\_benign} (the hard-negative class, paired with a
+justifying HR event); \emph{precursor} (concerning activity on an armed pathway, before
+the act); and \emph{malicious}. Table~\ref{tab:stats} reports a shipped sample and a
+scaled reference instance; both regenerate deterministically from their config.
+
+\begin{table}[t]
+\centering
+\caption{Two shipped instances. Prevalence is per malicious \emph{user-day}; the
+reference is sparser than CERT r6.2.}
+\label{tab:stats}
+\small
+\begin{tabular}{lrr}
+\toprule
+ & Sample (tech) & Reference (finance) \\
+\midrule
+Employees                      & 120      & 1{,}000 \\
+Horizon (days)                 & 70       & 120 \\
+Full events                    & 797{,}328 & 9{,}132{,}134 \\
+Observed events                & 705{,}641 & 7{,}827{,}513 \\
+Insider population / activated  & 7 / 5    & 8 / 6 \\
+Anomalous-benign employees     & 10       & 80 \\
+Benign events                  & 792{,}555 & 9{,}107{,}771 \\
+Anomalous-benign events        & 4{,}560  & 24{,}103 \\
+Precursor events               & 139      & 199 \\
+Malicious events               & 74       & 61 \\
+Malicious user-day prevalence  & --       & 0.02\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Benchmark}
+\label{sec:benchmark}
+The unit of analysis is the (user, day). Features are built only from the observed
+stream and only from attributes a real sensor could report; generator-internal flags
+that encode the label are excluded by an explicit denylist, and a regression test
+asserts that injecting them changes no feature. The observable HR-context event
+\emph{is} a feature, so a good model can learn to exonerate explained anomalies.
+
+\paragraph{Splits.} \emph{Temporal} (train early days, test later) prevents the
+future-into-past leakage of random splits; \emph{user-held-out} tests generalisation
+to unseen people; \emph{scenario-held-out} removes a whole pathway family from
+training---a generalisation test prior datasets do not offer.
+
+\paragraph{Metrics.} We report ROC-AUC and AUC-PR at the true sparse prevalence (not on
+a balanced subset), precision/recall at a review budget (top $b\%$ of user-days),
+detection \emph{earliness} (days between first flag and onset; enabled by precursor
+labels), and false-positive attribution to the anomalous-benign class.
+
+\paragraph{Shortcut audit.} We ship an audit that scores a single trivial rule
+(after-hours $+$ removable $+$ upload) against a full model. On CERT that rule is
+near-perfect; on the \sys{} reference it reaches PR-AUC $0.0004$ (ROC $0.547$) while a
+full logistic model reaches PR-AUC $0.092$---a positive \emph{signal-depth gap} of
+$+0.091$, and the rule's false positives are $64\%$ the engineered hard negatives.
+The shortcut is removed by construction.
+
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Reference baselines}
+Table~\ref{tab:baselines} runs six reference detectors on the finance reference
+($120{,}000$ user-days, $0.02\%$ malicious). At this prevalence the trivial rule is
+useless and static detectors are weak in PR-AUC; the causal temporal model
+(\code{sequence\_logreg}) is the only one that stays strong on ranking, generalises to
+unseen users and the held-out \code{data\_leak} scenario, and---under a $1\%$ review
+budget---catches far more insiders, with a median detection lead of up to two weeks.
+
+\begin{table}[t]
+\centering
+\caption{Reference baselines (finance, $1000\times120$, $0.02\%$ prevalence).
+R@1\%: recall at a $1\%$ review budget. Lead: median days before the act (positive =
+early). FP$_{ab}$: share of flagged negatives that are engineered hard negatives.}
+\label{tab:baselines}
+\small
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{llrrrrr}
+\toprule
+Split & Detector & ROC & PR-AUC & R@1\% & Lead & FP$_{ab}$ \\
+\midrule
+\multirow{3}{*}{temporal}
+ & volume\_rule (CERT shortcut) & 0.547 & 0.0004 & 0.00 & -- & 0.64 \\
+ & logistic regression          & 0.809 & 0.092 & 0.42 & $-1$ & 0.15 \\
+ & \textbf{sequence\_logreg}    & \textbf{0.991} & \textbf{0.478} & \textbf{0.83} & $0$ & 0.17 \\
+\midrule
+\multirow{3}{*}{user-holdout}
+ & volume\_rule                 & 0.738 & 0.0008 & 0.00 & 36 & 0.56 \\
+ & logistic regression          & 0.829 & 0.099 & 0.57 & 30 & 0.14 \\
+ & \textbf{sequence\_logreg}    & \textbf{1.000} & \textbf{0.613} & \textbf{1.00} & 16.5 & 0.22 \\
+\midrule
+\multirow{3}{*}{scenario-holdout}
+ & volume\_rule                 & 0.553 & 0.0003 & 0.00 & -- & 0.70 \\
+ & logistic regression          & 0.773 & 0.103 & 0.38 & 14 & 0.08 \\
+ & \textbf{sequence\_logreg}    & \textbf{0.996} & \textbf{0.441} & \textbf{0.88} & 14 & 0.10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{SOTA recipe family, ablated}
+To attribute the difficulty to \sys{}'s mechanisms rather than to a confound, we
+generate two datasets that share seed, org, onset, labels, prevalence and splits and
+differ only in a \code{legacy\_cert\_mode} flag that degenerately disables the whole
+anti-shortcut regime (benign power-user uploads/removable, benign after-hours baseline,
+benign-anomaly bursts, and insider stealth). We run reference reimplementations of the
+dominant CERT recipes over five seeds (Table~\ref{tab:ablation}). Every classical
+detector drops $43$--$92\%$ in PR-AUC and $\sim$0.1 ROC from the CERT regime to the
+realistic regime; on realistic data all are weak in PR-AUC against a no-skill baseline
+of $\approx0.0017$. We report ROC and PR together and do not cross metrics: the
+classical collapse holds on both, while the temporal model's advantage is on ranking
+and budgeted recall, not PR.
+
+\begin{table}[t]
+\centering
+\caption{SOTA recipe families, CERT-regime $\rightarrow$ realistic (temporal split,
+mean over 5 seeds). The whole anti-shortcut regime is toggled at once; see
+\S\ref{sec:threats}.}
+\label{tab:ablation}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Detector (recipe family) & ROC (CERT$\to$real) & PR-AUC (CERT$\to$real) & $\Delta$PR \\
+\midrule
+Random forest (user-day)        & $0.879\to0.773$ & $0.686\to0.363$ & $-47\%$ \\
+Gradient boosting (XGBoost-like)& $0.860\to0.610$ & $0.598\to0.049$ & $-92\%$ \\
+MLP (deep feed-forward)         & $0.825\to0.652$ & $0.642\to0.341$ & $-47\%$ \\
+Autoencoder (PCA reconstruction)& $0.880\to0.817$ & $0.679\to0.281$ & $-59\%$ \\
+Temporal GBDT (sequence)        & $0.966\to0.879$ & $0.445\to0.111$ & $-75\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The best-reported CERT SOTA, reimplemented}
+We take the strongest recent CERT architecture with a fully specified design---the
+UBS-Transformer~\citep{ubstransformer2025}: user-based sequencing, a
+6-layer/$d_{\text{model}}{=}512$/8-head reconstruction Transformer encoder trained with
+MSE on normal users, then One-Class SVM / LOF / Isolation Forest on the per-user
+reconstruction errors, evaluated per user. It reports accuracy $0.966$, precision
+$0.935$, recall $0.994$, F1 $0.964$, AUROC $0.950$ on CERT. We reimplement it exactly
+(adapting the per-step token to \sys{}'s day-granularity user-day features) and run it
+on a CERT-regime version of \sys{} (a faithfulness check) and on realistic \sys{}
+(Table~\ref{tab:ubs}). On CERT-regime data the reimplementation reproduces the paper's
+regime (AUROC $0.87$--$0.89$), landing slightly lower as expected for a stylized
+in-pipeline proxy trained on far less data and fewer epochs. The \emph{same code at the
+same scale} then drops to AUROC $0.643$ / F1 $0.425$ on realistic data; the bare
+reconstruction signal falls to AUROC $0.573$, barely above chance. The best-reported
+CERT SOTA loses $\sim$0.23 AUROC and $\sim$0.26 F1 and does not transfer.
+
+\begin{table}[t]
+\centering
+\caption{UBS-Transformer~\citep{ubstransformer2025}: reported on CERT vs. our faithful
+reimplementation on \sys{} ($400\times120$, per-user evaluation). The
+within-reimplementation CERT-regime $\rightarrow$ realistic gap is the confound-free
+measurement; the paper row is the external anchor.}
+\label{tab:ubs}
+\small
+\begin{tabular}{llrrrr}
+\toprule
+Setting & Outlier det. & AUROC & F1 & Precision & Recall \\
+\midrule
+Paper, reported on CERT        & iForest & \textbf{0.950} & \textbf{0.964} & 0.935 & 0.994 \\
+Reimpl, CERT-regime \sys{}     & iForest & 0.874 & 0.681 & 0.571 & 0.842 \\
+Reimpl, CERT-regime \sys{}     & OCSVM   & 0.892 & 0.750 & 0.714 & 0.789 \\
+Reimpl, realistic \sys{}       & iForest & \textbf{0.643} & \textbf{0.425} & 0.357 & 0.526 \\
+Reimpl, realistic \sys{}       & LOF     & 0.703 & 0.516 & 0.667 & 0.421 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Threats to Validity}
+\label{sec:threats}
+We state limitations plainly. (i) \emph{Model-based, not learned from real logs:}
+baseline rates are hand-set and realism is asserted via stylized-facts checks, not
+validated against a proprietary corpus. (ii) \emph{The \code{legacy\_cert\_mode}
+ablation toggles four coupled axes at once} (including insider stealth, which
+attenuates the positive signal), so Table~\ref{tab:ablation} reflects the combined
+regime; the isolated signature effect is the separate shortcut audit. (iii)
+\emph{Under-power:} experiments run at tens of insiders and $\sim$0.17\% prevalence, so
+reported magnitudes are indicative and the direction is the result; the SOTA ablation
+is reported over five seeds, the UBS reimplementation over one. (iv) \emph{Metric
+honesty:} at these prevalences AUC-PR is near a $\sim$0.002 no-skill floor, so all
+realistic detectors are operationally weak; we do not claim any model ``works''. (v)
+\emph{Proxies:} the PCA autoencoder is a lower bound on the DNN/LSTM auto-encoder
+family, the temporal GBDT is a proxy for LSTM/transformer sequence models, and the
+CERT regime is reproduced in-pipeline rather than measured on the real corpus (which
+was not available in our environment).
+
+\section{Ethics, Availability, and Reproducibility}
+\sys{} is fully synthetic: no real people, accounts, credentials, or messages; names
+are drawn from a fixed neutral list. It models behaviour as detection observables and
+MITRE technique labels and contains no operational attack instructions; it is intended
+for defensive and academic use only. Every dataset is a pure function of its
+configuration and regenerates byte-for-byte; the deterministic template renderer runs
+at zero API cost, with a Claude-based renderer as an optional, label-blind quality
+upgrade. The code, configs, benchmark, audits, and this paper are released together.
+
+\section{Conclusion}
+\sys{} replaces injected scripts with grown intent, guarantees ground truth through a
+label-owning bus and a label-blind renderer, ships engineered hard negatives, graded
+labels, a sensor model, and a self-critical benchmark. The signature shortcut that
+inflates CERT is removed by construction, and the best-reported CERT SOTA does not
+transfer to it---evidence that realistic insider-threat detection remains unsolved and
+that the useful signal lives in the behavioural trajectory, not a static signature.
+
+\small
+\bibliography{references}
+
+\end{document}
