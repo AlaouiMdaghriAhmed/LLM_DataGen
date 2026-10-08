@@ -8,3 +8,12 @@ dist/
 out/
 /events.jsonl
 /observed.jsonl
+
+# LaTeX build artifacts (keep sources, not outputs)
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.pdf
