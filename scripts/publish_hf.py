@@ -76,6 +76,8 @@ def main() -> int:
     p.add_argument("--renderer", default="template", choices=["template", "anthropic"])
     p.add_argument("--no-render", action="store_true")
     p.add_argument("--public", action="store_true", help="create a public repo (default private)")
+    p.add_argument("--clean", action="store_true",
+                   help="make the Hub repo exactly mirror the folder (delete stale files)")
     p.add_argument("--token", default=os.environ.get("HF_TOKEN"),
                    help="HF token (default: $HF_TOKEN or cached login)")
     args = p.parse_args()
@@ -86,17 +88,23 @@ def main() -> int:
         print("[hf] huggingface_hub not installed. Run: pip install -e '.[hf]'", file=sys.stderr)
         return 2
 
-    # materialise the dataset unless an existing --from-dir was given
+    # If --from-dir points at a prepared dataset, upload it AS-IS (never regenerate,
+    # never touch its card). A prepared folder is either a flat instance (has
+    # events.jsonl) or a multi-domain release (has README.md and/or <domain>/events.jsonl).
     data_dir = args.from_dir
-    if not (data_dir and os.path.isdir(data_dir) and
-            os.path.exists(os.path.join(data_dir, "events.jsonl"))):
-        data_dir = _generate(args)
-
-    # drop the dataset card in as README.md
-    if os.path.exists(CARD):
-        shutil.copyfile(CARD, os.path.join(data_dir, "README.md"))
+    prepared = _looks_prepared(data_dir)
+    if prepared:
+        print(f"[hf] using prepared dataset at {data_dir} as-is (no generation)", flush=True)
     else:
-        print(f"[hf] warning: dataset card {CARD} not found; uploading without it", file=sys.stderr)
+        if data_dir and os.path.isdir(data_dir) and os.listdir(data_dir):
+            print(f"[hf] WARNING: {data_dir} exists but has no dataset files; "
+                  f"generating a single instance into it", file=sys.stderr)
+        data_dir = _generate(args)
+        # only a freshly-generated flat instance gets the single-instance card
+        if os.path.exists(CARD):
+            shutil.copyfile(CARD, os.path.join(data_dir, "README.md"))
+        else:
+            print(f"[hf] warning: dataset card {CARD} not found; uploading without it", file=sys.stderr)
 
     api = HfApi(token=args.token)
     who = api.whoami()  # fails fast with a clear error if the token is bad/missing
@@ -104,11 +112,30 @@ def main() -> int:
 
     api.create_repo(repo_id=args.repo_id, repo_type="dataset",
                     private=not args.public, exist_ok=True)
-    print(f"[hf] uploading {data_dir} -> {args.repo_id} (private={not args.public}) ...", flush=True)
-    api.upload_folder(repo_id=args.repo_id, repo_type="dataset", folder_path=data_dir,
-                      commit_message="Add synthitd dataset instance")
+    nfiles = sum(len(fs) for _, _, fs in os.walk(data_dir))
+    print(f"[hf] uploading {data_dir} ({nfiles} files) -> {args.repo_id} "
+          f"(private={not args.public}, clean={args.clean}) ...", flush=True)
+    kwargs = dict(repo_id=args.repo_id, repo_type="dataset", folder_path=data_dir,
+                  commit_message="Add synthitd dataset")
+    if args.clean:
+        kwargs["delete_patterns"] = ["*"]  # remove hub files not present in the folder
+    api.upload_folder(**kwargs)
     print(f"[hf] done: https://huggingface.co/datasets/{args.repo_id}", flush=True)
     return 0
+
+
+def _looks_prepared(d: str | None) -> bool:
+    """True if d already holds a dataset (flat instance or multi-domain release)."""
+    if not (d and os.path.isdir(d)):
+        return False
+    if os.path.exists(os.path.join(d, "events.jsonl")):      # flat instance
+        return True
+    if os.path.exists(os.path.join(d, "README.md")):         # release card present
+        return True
+    for name in os.listdir(d):                                # any domain subfolder
+        if os.path.exists(os.path.join(d, name, "events.jsonl")):
+            return True
+    return False
 
 
 if __name__ == "__main__":
